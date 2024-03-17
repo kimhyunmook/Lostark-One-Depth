@@ -1,4 +1,5 @@
-import { ce, title, title2, label } from './util.js';
+import { ce, title, title2, label, tooltip } from './util.js';
+import { css_cover } from './class.js'
 
 const url = "https://developer-lostark.game.onstove.com"
 const API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IktYMk40TkRDSTJ5NTA5NWpjTWk5TllqY2lyZyIsImtpZCI6IktYMk40TkRDSTJ5NTA5NWpjTWk5TllqY2lyZyJ9.eyJpc3MiOiJodHRwczovL2x1ZHkuZ2FtZS5vbnN0b3ZlLmNvbSIsImF1ZCI6Imh0dHBzOi8vbHVkeS5nYW1lLm9uc3RvdmUuY29tL3Jlc291cmNlcyIsImNsaWVudF9pZCI6IjEwMDAwMDAwMDA0NzcwNDEifQ.G2QMUj9SrqvYpowvmYe5EZsVdWTqiK_V8RPOUfD9SfBtQc3VVkeynvmhj6zUZL21aD8OWoeNySPRZzG62QtDt4-YUgkLrseShA8P59TIBqi4qU7mhmnXbmygdk1DjPVzNZNhIISjFNL8rLNKoYNeDGlpp8_dFQvTj919G7-JJ8KPdxJnEW-lxdHqRPsUQ4TPmFXNRIxbY6PBIyJQjAsTtYh7GvL9KHR_xKV2c5jVRdCPp4Ekiqqi1LBSTCeYsPkoMM3Dt-UEThF6h75tRWfWdiXf6_KyrR_Bm2SwolMZvUboQsX7NK-4eGjVyLjDitDOC3uRzDCuJc4zykFunGU-nA";
@@ -8,8 +9,24 @@ const headers = {
     authorization: 'bearer ' + API_KEY
 }
 
-
 const nav = 'nav.menu'
+// const menu_cover = document.querySelectorAll(`${nav} .menu-cover.active a`);
+// [...menu_cover].map((v, i) => {
+//     v.addEventListener('click', (e) => {
+//         const t = e.currentTarget;
+//         t.parentNode.classList.add('on')
+//     })
+// });
+const closebtn = document.querySelectorAll(`${nav} .menu-cover.active .closebtn`);
+[...closebtn].map((v, i) => {
+    v.addEventListener('click', (e) => {
+        e.preventDefault();
+        const t = e.currentTarget;
+        // t.parentNode.parentNode.parentNode.parentNode.classList.remove('on');
+        t.parentNode.children[0].value = "";
+    })
+})
+
 const nav_news_li = document.querySelectorAll(`${nav} .news li`);
 [...nav_news_li].map((el, i) => {
     if (el.classList[1] === 'on') {
@@ -26,16 +43,16 @@ const nav_news_li = document.querySelectorAll(`${nav} .news li`);
     })
 })
 
-const nav_characters_li = document.querySelector(`${nav} .characters li`)
-nav_characters_li.addEventListener('click', (e) => {
-    const t = e.currentTarget;
-    t.className.includes('active') ? t.classList.remove('active') : t.classList.add('active');
-})
+// const nav_characters_li = document.querySelector(`${nav} .characters li`)
+// nav_characters_li.addEventListener('click', (e) => {
+//     const t = e.currentTarget;
+//     t.className.includes('active') ? t.classList.remove('active') : t.classList.add('active');
+// })
 const characters_serarch = document.querySelector(`${nav} .characters-search`);
 characters_serarch.addEventListener('click', (e) => {
     e.preventDefault();
     const t = e.currentTarget;
-    const user_name = t.parentNode.children[1];
+    const user_name = t.parentNode.children[0];
     if (!!!user_name.value) {
         alert('캐릭터 이름이 비어 있습니다.');
         user_name.focus();
@@ -44,32 +61,31 @@ characters_serarch.addEventListener('click', (e) => {
     axios_character(user_name.value)
 })
 
-function axios_news(target) {
-    axios.get(url + `/news/${target}`, {
-        headers
-    })
-        .then((res) => {
-            const data = res.data
-            data?.map((list, index) => {
-                const cover = ce({ element: "a", className: 'cover', link: list.Link, type: list.Type });
-                ce({ element: "h3", className: 'title', inner: list.Title, append: cover });
-                let date;
-                if (target === 'events') {
-                    ce({ element: 'img', className: 'thumbnail', inner: list.Thumbnail, append: cover })
-                    date = ce({ element: 'p', className: 'event-date', inner: list.StartDate + '~' + list.EndDate, append: cover })
-                    !!list.RewardDate ? ce({ element: 'p', className: 'event-rewardDate', inner: list.StartDate + '~' + list.RewardDate, append: cover })
-                        : null
-                } else {
-                    date = ce({ element: 'p', className: "notice-date", inner: list.Date, append: cover })
-                }
-                outputview.append(cover);
-            })
+// function axios_news(target) {
+//     axios.get(url + `/news/${target}`, {
+//         headers
+//     })
+//         .then((res) => {
+//             const data = res.data
+//             data?.map((list, index) => {
+//                 const cover = ce({ element: "a", className: 'cover ' + css_cover, link: list.Link, type: list.Type });
+//                 ce({ element: "h3", className: 'title', inner: list.Title, append: cover });
+//                 if (target === 'events') {
+//                     ce({ element: 'img', className: 'thumbnail', inner: list.Thumbnail, append: cover })
+//                     date = ce({ element: 'p', className: 'event-date', inner: list.StartDate + '~' + list.EndDate, append: cover })
+//                     !!list.RewardDate ? ce({ element: 'p', className: 'event-rewardDate', inner: list.StartDate + '~' + list.RewardDate, append: cover })
+//                         : null
+//                 } else {
+//                     date = ce({ element: 'p', className: "notice-date", inner: list.Date, append: cover })
+//                 }
+//                 outputview.append(cover);
+//             })
 
-        })
-        .catch((err) => {
-            console.error(err)
-        })
-}
+//         })
+//         .catch((err) => {
+//             console.error(err)
+//         })
+// }
 
 function axios_character(target) {
     axios.get(url + `/armories/characters/${target}`, { headers })
@@ -82,7 +98,7 @@ function axios_character(target) {
 
             outputview.innerHTML = null;
             console.log(data)
-            const character = ce({ element: "div", className: "cover-character" })
+            const character = ce({ element: "div", className: "cover-character " + css_cover })
 
             const avatars = data.ArmoryAvatars
             let coverInit = {
@@ -95,7 +111,8 @@ function axios_character(target) {
                 const typeavatar = ce({ element: "div", className: "avatar", append: avatarcover })
                 const filt = avatars?.filter(x => x.Type === type)
                 filt?.map(el => {
-                    ce({ element: 'img', className: "avatar-img", inner: el.Icon, append: typeavatar })
+                    let img = ce({ element: 'img', className: "avatar-img", inner: el.Icon, append: typeavatar })
+                    tooltip(img, el.Tooltip)
                 })
             }
             avatar_ce('머리 아바타')
@@ -111,8 +128,9 @@ function axios_character(target) {
             const cardcover = ce({ ...coverInit, className: "card", inner: title('카드') });
             const cards = ce({ element: "div", className: "cards", inner: title('장착 카드'), append: cardcover })
             card?.Cards.map(el => {
-                ce({ element: "img", className: "card-img", inner: el.Icon, append: cards })
-                ce({ element: "h4", className: "card-name", inner: el.Name, append: cards })
+                let img = ce({ element: "img", className: "card-img", inner: el.Icon, append: cards })
+                let name = ce({ element: "h4", className: "card-name", inner: el.Name, append: cards })
+                tooltip([img, name], el.Tooltip)
             })
             const cardeffects = ce({ element: 'div', className: "card-effects", inner: title('카드 효과'), append: cardcover })
             card?.Effects.map(el => {
@@ -246,10 +264,58 @@ function axios_character(target) {
         .catch((err) => {
             console.error(err);
         })
-
-
-
 }
 
+// function axios_auction(target) {
+//     // axios.get(url + '/auctions/options', { headers })
+//     //     .then((res) => { console.log(res.data) })
+
+
+//     let sample = {
+//         "ItemLevelMin": 0,
+//         "ItemLevelMax": 0,
+//         "ItemGradeQuality": null,
+//         "SkillOptions": [
+//             {
+//                 "FirstOption": null,
+//                 "SecondOption": null,
+//                 "MinValue": null,
+//                 "MaxValue": null
+//             }
+//         ],
+//         "EtcOptions": [
+//             {
+//                 "FirstOption": null,
+//                 "SecondOption": null,
+//                 "MinValue": null,
+//                 "MaxValue": null
+//             }
+//         ],
+//         "Sort": "BIDSTART_PRICE",
+//         "CategoryCode": 20005,
+//         "CharacterClass": "버서커",
+//         "ItemTier": null,
+//         "ItemGrade": "유물",
+//         "ItemName": "string",
+//         "PageNo": 0,
+//         "SortCondition": "ASC"
+//     }
+//     axios.post(url + '/auctions/items', sample, {
+//         headers: { ...headers, "Cotent-Type": "application/json" }
+//     })
+//         .then(res => {
+//             console.log(res.data)
+//         })
+
+
+
+//     outputview.innerHTML = null;
+// }
+
+// function axios_market() { 
+//     axios.get()
+// }
+// axios_auction()
 axios_character('개연구')
+
 

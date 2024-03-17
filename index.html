@@ -5,51 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API-TEST</title>
+    <link rel="stylesheet" href="./main.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="./node_modules/axios/dist/axios.min.js"></script>
 </head>
 
-<body>
-    <header>
+<body class="">
+    <header class="bg-zinc-950">
         <a href="/" class="logo">
             <img src="	https://cdn-lostark.game.onstove.com/2018/obt/assets/images/common/guide/bi-lostark.png"
                 alt="lostark_logo">
         </a>
         <nav class="menu">
-            <div class="menu-cover">
-                <h3>
-                    소식
-                </h3>
-                <ul class="news">
-                    <li class="notices on">
-                        <a href="#notices">
-                            공지
-                        </a>
-                    </li>
-                    <li class="events">
-                        <a href="#events">
-                            이벤트
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="menu-cover">
-                <h3>캐릭터</h3>
+            <div class="menu-cover active">
+                <a href="#characters" class="">
+                    캐릭터 검색
+                </a>
                 <ul class="characters">
-                    <li class="characters">
-                        <a href="#characters">
-                            캐릭터
-                        </a>
+                    <li class="characters-li">
                         <form>
-                            <label for="name">이름</label>
                             <input type="text" name="name">
-                            <button class="characters-search">검색</button>
+                            <button class="characters-search text-gray-300 hover:text-gray-700">검색</button>
+                            <button class="closebtn text-gray-300 hover:text-gray-700"></button>
                         </form>
                     </li>
                 </ul>
             </div>
+
         </nav>
     </header>
-    <div class="output-view"></div>
+    <div class="output-view container mx-auto"></div>
     <script src="index.js" type="module"></script>
 </body>
 
