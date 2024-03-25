@@ -1,4 +1,4 @@
-import { ce, title, title2, label, tooltip } from "./util.js";
+import { ce, title, title2, label, tooltip, tooltip2, equipmentTooltip } from "./util.js";
 import { css } from "./class.js";
 
 const url = "https://developer-lostark.game.onstove.com";
@@ -91,6 +91,7 @@ characters_serarch.addEventListener("click", (e) => {
 // }
 
 function axios_character(target) {
+  let style = '';
   axios
     .get(url + `/armories/characters/${target}`, { headers })
     .then((res) => {
@@ -101,7 +102,8 @@ function axios_character(target) {
       }
 
       outputview.innerHTML = null;
-      console.log(data);
+      console.log('full data', data);
+
       const character = ce({
         element: "div",
         className: "cover-character " + css.cover,
@@ -114,24 +116,26 @@ function axios_character(target) {
       };
       const avatarcover = ce({
         ...coverInit,
-        className: "avatar " + css.cover_div,
+        className: "avatar relative " + css.cover_div,
         inner: title("아바타"),
       });
       const avatar_ce = (type) => {
+        const filt = avatars?.filter((x) => x.Type === type);
+        if (filt.length < 2)
+          style = `col-span-${filt.length} `;
         const typeavatar = ce({
           element: "div",
-          className: "avatar_under " + css.avatar,
+          className: `avatar_under grid-flow-dense grid-cols-${filt.length}  ` + style + css.avatar,
           append: avatarcover,
         });
         ce({
           element: "h4",
-          className: "avatar-title " + css.small_title,
+          className: `avatar-title col-span-${filt.length} ` + css.small_title,
           inner: type,
           append: typeavatar,
         });
-        const filt = avatars?.filter((x) => x.Type === type);
+
         filt?.map((el) => {
-          console.log("el", el.Grade);
           let grade = "";
           switch (el.Grade) {
             case "영웅":
@@ -141,57 +145,82 @@ function axios_character(target) {
               grade = css.legend;
               break;
           }
-
           let imgCover = ce({
             element: "div",
-            className: "avatar-imgcover w-32 m-auto mb-3 rounded-lg " + grade,
+            className: `avatar-imgcover w-40 md:w-32 m-auto mb-3 rounded-lg max-w-24 sm:max-w-28 md:max-w-none ` + grade,
             append: typeavatar,
           });
-          let img = ce({
+          ce({
             element: "img",
-            className: "avatar-img ",
+            className: "avatar-img hover:scale-110",
             inner: el.Icon,
             append: imgCover,
           });
-
+          // console.log(el.Tooltip)
           tooltip(imgCover, el.Tooltip);
         });
       };
-      avatar_ce("머리 아바타");
-      avatar_ce("상의 아바타");
-      avatar_ce("하의 아바타");
-      avatar_ce("무기 아바타");
-      avatar_ce("악기 아바타");
-      avatar_ce("얼굴1 아바타");
-      avatar_ce("얼굴2 아바타");
-      avatar_ce("이동 효과");
+      // avatar_ce("머리 아바타");
+      // avatar_ce("상의 아바타");
+      // avatar_ce("하의 아바타");
+      // avatar_ce("무기 아바타");
+      // avatar_ce("악기 아바타");
+      // avatar_ce("얼굴1 아바타");
+      // avatar_ce("얼굴2 아바타");
+      // avatar_ce("이동 효과");
 
+      //----------- 카드
       const card = data.ArmoryCard;
       const cardcover = ce({
         ...coverInit,
-        className: "card",
+        className: "card hidden",
         inner: title("카드"),
       });
       const cards = ce({
         element: "div",
-        className: "cards",
-        // inner: title("장착 카드"),
+        className: "cards grid gap-1 grid-cols-3 lg:grid-cols-6",
         append: cardcover,
       });
       card?.Cards.map((el) => {
-        let img = ce({
+        const grade = el.Grade;
+        const awakeCount = el.AwakeCount;
+        const awakeTotal = el.AwakeTotal; // Max 5
+        const typecover = ce({ element: 'div', className: "card-img-box relative", append: cards })
+        style = 'card-teduri '
+        switch (grade) {
+          case '전설': style += 'card-legend';
+            break;
+          case '영웅': style += 'card-hero';
+            break;
+          case '희귀': style += 'card-rare';
+            break;
+        }
+
+        ce({
           element: "img",
-          className: "card-img",
+          className: "card-img w-[136px] h-[207px] pt-1 pl-1 pb-1 ",
           inner: el.Icon,
-          append: cards,
+          append: typecover,
         });
-        let name = ce({
-          element: "h4",
-          className: "card-name",
-          inner: el.Name,
-          append: cards,
-        });
-        tooltip([img, name], el.Tooltip);
+        const teduri = ce({
+          element: 'div', className: "w-full h-full max-w-[140px] absolute z-10 top-0 left-0 " + style, append: typecover
+        })
+        const awake = ce({
+          element: 'div', className: "grid grid-cols-5 absolute bottom-[7%] pl-3 pr-3", append: teduri
+        })
+        let i = 0;
+        if (awakeCount === 5)
+          for (i = 0; i < awakeTotal; i++) {
+            ce({ element: 'img', className: "w-[36px]", inner: './img/card_active.png', append: awake })
+          }
+        else {
+          for (i = 0; i < awakeCount; i++) {
+            ce({ element: 'img', className: "w-[36px]", inner: './img/card_active.png', append: awake })
+          }
+          for (i = 0; i < awakeTotal - awakeCount; i++) {
+            ce({ element: 'img', className: "w-[36px]", inner: './img/card_noactive.png', append: awake })
+          }
+        }
       });
       const cardeffects = ce({
         element: "div",
@@ -202,81 +231,243 @@ function axios_character(target) {
       card?.Effects.map((el) => {
         ce({
           element: "p",
-          className: "card-slot",
-          inner: "카드 슬롯 : " + el.CardSlots.map((t) => " " + t),
+          className: "card-slot mb-3 text-xl bg-violet-100 text-indigo-600 rounded-full pl-3 pr-3  inline-block overflow-hidden",
+          inner: `<b class='pr-2 pt-1 pb-1 border-r border-solid border-violet-600 font-black'>카드 슬롯</b>  ` + el.CardSlots.map((t) => ` ${t}`),
           append: cardeffects,
         });
         el.Items.map((t) => {
           ce({
             element: "p",
-            className: "card-items",
+            className: "card-items text-white text-thin text-sm mb-2",
             inner: t.Name + " " + t.Description,
             append: cardeffects,
           });
         });
       });
 
+      // ------------------각인
       const engraving = data.ArmoryEngraving;
       const engravingeffectcover = ce({
         ...coverInit,
-        className: "engraving-effects",
+        className: "engraving-effects hidden",
         inner: title("각인"),
       });
-      const engravingscover = ce({
-        ...coverInit,
-        className: "engravings",
-        inner: title("착용 각인"),
-      });
+
       engraving?.Effects.map((el) => {
+        const typecover = ce({
+          element: 'div',
+          className: "engraving-cover flex mb-3",
+          append: engravingeffectcover
+        })
         ce({
           element: "img",
-          className: "engravingeffect-img",
+          className: "engravingeffect-img max-w-[64px] max-h-[64px] r mr-4 rounded-full",
           inner: el.Icon,
-          append: engravingeffectcover,
+          append: typecover,
         });
         ce({
           element: "p",
-          className: "description",
-          inner: `<b>${el.Name}</b> <br/> ${el.Description}`,
-          append: engravingeffectcover,
+          className: "description break-keep text-sm pl-1",
+          inner: `<b class="text-white mb-1 text-lg">${el.Name}</b>`,
+          append: typecover,
         });
-      });
-      engraving?.Engravings.map((el) => {
-        ce({
-          element: "img",
-          className: "engravings-img",
-          inner: el.Icon,
-          append: engravingscover,
+        const text = ce({
+          element: "p",
+          className: "description break-keep text-sm pl-1",
+          inner: `<b class="text-violet-700 mb-1 text-lg ${css.border}">${el.Name}</b> <br/> <span class="pl-2 block">${el.Description}</span>`,
+          append: typecover,
         });
+        tooltip2(text)
       });
 
+      // 착용한 각인
+      // const engravingscover = ce({
+      //   ...coverInit,
+      //   className: "engravings",
+      //   inner: title("착용 각인"),
+      // });
+      // engraving?.Engravings.map((el) => {
+      //   ce({
+      //     element: "img",
+      //     className: "engravings-img max-w-[64px] max-h-[64px]",
+      //     inner: el.Icon,
+      //     append: engravingscover,
+      //   });
+      // });
+
+      //---------------장비
       const equipment = data.ArmoryEquipment;
       const equipmentcover = ce({
         ...coverInit,
-        className: "equipment-cover",
+        className: "equipment-cover flex justify-between flex-wrap",
         inner: title("착용 장비"),
       });
-      equipment?.map((el) => {
-        // tooltip <-이건 정재 해야됨
-        const typecover = ce({
-          element: "div",
-          element: "equipment-cover",
-          inner: title(el.Type),
-          append: equipmentcover,
-        });
-        ce({
-          element: "img",
-          className: "equipment-img",
-          inner: el.Icon,
-          append: typecover,
-        });
-        ce({
-          element: "h4",
-          className: "equipment-name",
-          inner: el.Name,
-          append: typecover,
-        });
-      });
+      function eq_ce(start, last) {
+        const boxcover = ce({
+          className: "equipment-cover-box bg-white w-[100%] md:w-[49%] rounded-lg p-2",
+          append: equipmentcover
+        })
+
+        let tooltip, grade, style2, str;
+        for (let i = start; i < last; i++) {
+          grade = equipment[i]?.Grade;
+          switch (grade) {
+            case "고대": style = 'from-[#3d3325] to-[#dcc999]';
+              style2 = 'text-[#D9AB48]';
+              break;
+            case "유물": style = 'from-[#341a09] to-[#a24006]';
+              style2 = 'text-[#a24006]'
+              break;
+          }
+          // 장비가 없을 때
+          if (!!!equipment[i]) return;
+
+          tooltip = JSON.parse(equipment[i]?.Tooltip)
+          const infotext = (target, type) => {
+            let value = Object.values(tooltip)
+            let result = value.filter(x => x.type === target)
+            let index = 0;
+            switch (type) {
+              case '상급 재련': index = 2;
+                break;
+              case '추가 효과': index = 1;
+                break;
+            }
+
+            if (target === 'IndentStringGroup') {
+              result?.map((v, i) => {
+                let values = Object.values(v.value);
+                if (values?.length < 3) {
+                  if (values[0]?.topStr?.includes(type)) str = values[0].topStr
+                }
+              })
+              return ce({ element: 'p', inner: str }).textContent.replace('[초월] ', '').split('단계')[1]
+            }
+            else {
+              result = result[index]?.value
+              if (typeof result === 'object') {
+                delete result.bEquip;
+                delete result.slotData;
+                switch (type) {
+                  case '품질': result = `<b>${result.leftStr1}</b>  ${result.qualityValue}`;
+                    break;
+                  case '아이템 레벨': result = `${result?.leftStr2.split('아이템 레벨')[1].split('(티어')[0].trim()}`;
+                    break;
+                  case '추가 효과': result = `${result?.Element_001.replace('<BR>', ' ')}`
+                    break;
+                  default: result = `${result.leftStr0}`;
+                }
+              }
+              if (index === 2 && !result?.includes('상급 재련')) {
+                result = ''
+              }
+
+              return ce({ element: 'p', inner: result }).textContent
+            }
+
+          }
+
+          let info
+          if (i < 6) {
+            info = {
+              itemname: infotext('NameTagBox'),
+              itemquality: infotext('ItemTitle', '품질'),
+              itemlevel: infotext('ItemTitle', '아이템 레벨'),
+              advenceLevel: infotext('SingleTextBox', '상급 재련'),
+              transendence: infotext("IndentStringGroup", '초월'),
+            }
+          }
+          else {
+            info = {
+              itemname: infotext('NameTagBox'),
+              itemquality: infotext('ItemTitle', '품질'),
+              option: infotext('ItemPartBox', '추가 효과')
+            }
+          }
+          console.log('info', info)
+          let quality = tooltip.Element_001.value.qualityValue;
+          let qualitystyle = ''
+          switch (true) {
+            case quality === 100: qualitystyle = 'bg-[#f9ae00]';
+              break;
+            case quality >= 90 && quality < 100: qualitystyle = "bg-[#8045DD]";
+              break;
+            case quality >= 70 && quality < 90: qualitystyle = "bg-[#2AB1F6]";
+              break;
+            case quality < 70 && quality > 0: qualitystyle = "bg-[#91F202]";
+              break;
+
+          }
+
+          const typecover = ce({
+            // inner: title2(equipment[i].Type, " mb-1 mt-1 w-full"),
+            className: "equipments mb-4 flex border-b pb-2",
+            append: boxcover
+          })
+          let h = quality > 0 ? ' h-20 ' : 'h-16'
+          const imgcover = ce({
+            className: "equipment-img-cover flex w-[64px] relative rounded-md overflow-hidden bg-gradient-to-br mr-3 " + style + h,
+            append: typecover
+          })
+          ce({
+            element: "img",
+            className: "equipment-img w-16 h-16 ",
+            inner: equipment[i].Icon,
+            append: imgcover,
+          });
+          if (quality > 0)
+            ce({
+              element: 'p',
+              className: "quality absolute bottom-0 left-0 w-full h-[1.2rem] text-white font-black text-center leading-4 text-md pt-[0.1em] " + qualitystyle,
+              inner: quality,
+              append: imgcover
+            })
+
+          const spac = ce({
+            className: "spac pt-1 flex flex-wrap items-start max-w-[350px] min-w-[290px]",
+            append: typecover
+          })
+
+          ce({
+            element: "p",
+            className: `item-name text-lg ${style2} font-black leading-4 w-full`,
+            inner: equipment[i].Name,
+            append: spac
+          });
+          if (!!info?.transendence) {
+            let s = 16;
+            ce({
+              element: 'p',
+              className: ` font-black flex items-center justify-center pt-1 mr-1`,
+              inner: `<img src="./img/trancendence.png" class="w-5 max-w-[${s}px] max-h-[${s}px] mr-1" /> 
+              <b class="text-[#ffd200]" style="text-shadow:1px 1px #753b3b99">${info.transendence}</b>`,
+              append: spac
+            })
+          }
+
+          ce({
+            element: 'p',
+            className: `advence tracking-tight font-black text-black text-sm p-1`,
+            inner: info?.advenceLevel,
+            append: spac
+          })
+
+          if (!!info?.option) {
+            ce({
+              element: 'p',
+              className: `text-sm font-bold text-[#999]`,
+              inner: info.option,
+              append: spac
+            })
+          }
+
+        }
+      }
+      // // 장비
+      // eq_ce(0, 6);
+
+      // // 악세
+      // eq_ce(6, 12)
 
       const gem = data.ArmoryGem;
       const gemeffects = gem?.Effects;
@@ -288,42 +479,57 @@ function axios_character(target) {
       });
       const gemeffectscover = ce({
         element: "div",
-        className: "gemeffects-cover",
-        inner: title2("착용 보석 효과"),
+        className: "gemeffects-cover grid grid-cols-11 gap-3 relative",
+        // inner: title2("착용 보석 효과",'grid-cols-10'),
         append: gemcover,
       });
       // const gemscover = ce({ element: 'div', className: "gems-cover", inner: title2('착용 보석'), append: gemcover });
-      gemeffects?.map((el) => {
+      gemeffects?.map((el, i) => {
         const slotbox = ce({
           element: "div",
-          className: "gem-slot",
+          className: "gem-slot group/gems bg-white p-1 rounded-md mb-2 lg:relative col-span-1",
           append: gemeffectscover,
         });
         const gems_ = gems?.filter((x) => x.Slot === el.GemSlot);
-
+        const imgcover = ce({
+          className: 'gem-imgcover',
+          append: slotbox
+        })
         ce({
           element: "img",
           className: "gem-img",
           inner: gems_[0].Icon,
-          append: slotbox,
+          append: imgcover,
         });
+
+
+        const gemdiv = ce({
+          className: `gems-cover-div absolute bg-[rgba(0,0,0,0.9)] p-1 z-10 top-full min-w-[300px] ${css.xCenter}`,
+          append: slotbox
+        })
+        ce({
+          element: "h4",
+          className: "gem-name",
+          inner: gems_[0].Name,
+          append: gemdiv
+        })
         ce({
           element: "img",
           className: "gemeffect-img",
           inner: el.Icon,
-          append: slotbox,
+          append: gemdiv,
         });
         ce({
           element: "h4",
           className: "gemeffect-Name",
           inner: el.Name,
-          append: slotbox,
+          append: gemdiv,
         });
         ce({
           element: "p",
           className: "escription",
           inner: el.Description,
-          append: slotbox,
+          append: gemdiv,
         });
       });
       // gems?.map((el, i) => {

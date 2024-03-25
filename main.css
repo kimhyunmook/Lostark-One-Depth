@@ -1,5 +1,12 @@
 * {
   box-sizing: border-box;
+  letter-spacing: -1px;
+  /* line-height: 1.5em; */
+
+}
+
+img {
+  transition: .5s;
 }
 
 header {
@@ -9,7 +16,11 @@ header {
 header .logo {
   display: block;
   margin: auto;
-  max-width: 250px;
+  max-width: 500px;
+  background: url(./img/lostark.png) no-repeat center;
+  background-size: cover;
+  height: 300px;
+
 }
 
 header .logo img {
@@ -31,7 +42,7 @@ header nav .menu-cover {
   max-width: 200px;
 }
 
-header nav .menu-cover > a {
+header nav .menu-cover>a {
   display: block;
   text-align: center;
   color: #fff;
@@ -39,8 +50,7 @@ header nav .menu-cover > a {
   font-size: 25px;
 }
 
-header nav .menu-cover ul {
-}
+header nav .menu-cover ul {}
 
 header nav .menu-cover.active ul {
   /* display: none; */
@@ -79,6 +89,10 @@ header nav .menu-cover ul li.characters-li form input {
   padding: 3px;
   padding-left: 7px;
   background-color: transparent;
+}
+
+header nav .menu-cover ul li.characters-li:hover {
+  border-color: rgb(125, 83, 241);
 }
 
 header nav .menu-cover ul li.characters-li form button {
@@ -129,10 +143,28 @@ header nav .menu-cover ul li.characters-li form button.closebtn:hover::after {
 .tooltip-cover:hover .tooltip {
   display: block;
 }
-.tooltip {
-}
+
+.tooltip {}
+
 .NameTagBox {
-  font-size: 1.2vw;
-  /* white-space: nowrap; */
+  font-size: 1.5vw;
+  white-space: nowrap;
   overflow: hidden;
+}
+
+.card-teduri {
+  background: url(./img/card_board.png) no-repeat;
+  background-size: cover;
+}
+
+.card-legend {
+  background-position: right;
+}
+
+.card-hero {
+  background-position: 60%;
+}
+
+.card-rare {
+  background-position: 40%;
 }
