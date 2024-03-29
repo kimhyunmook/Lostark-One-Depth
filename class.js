@@ -1,5 +1,8 @@
 export const css = {
   xCenter: "left-1/2 translate-x-[-50%]",
+  gradient: (from, to) => {
+    return ` bg-gradient-to-br from-[${from}] to-[${to}]`
+  },
 
   cover: "bg-zinc-700 p-5 grid gap-10",
   cover_div: "grid grid-cols-2 md:grid-cols-3 gap-4",
