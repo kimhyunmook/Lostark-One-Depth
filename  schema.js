@@ -39,16 +39,16 @@ export const raidSchema = (
     title: [],
     status: 2400,
     wepon: {
-      stage: [0, 0],
+      stage: 0,
       quality: 80,
-      itemlevel: [0, 0],
-      transcedence: [0, 0],
+      itemlevel: 0,
+      transcedence: 0,
     },
     armor: {
-      stage: [0, 0],
+      stage: 0,
       quality: 60,
-      transcedence: [0, 0],
-      itemlevel: [0, 0],
+      transcedence: 0,
+      itemlevel: 0,
     },
     gem: 5,
     card: [
@@ -69,17 +69,17 @@ export const raidSchema = (
     wepon: !!target.wepon
       ? target.wepon
       : {
-          stage: [0, 0],
-          itemlevel: [0, 0],
-          quality: [80],
-          transcedence: [0, 0],
+          stage: 0,
+          itemlevel: 0,
+          quality: 80,
+          transcedence: 0,
         },
     armor: !!target.armor
       ? target.armor
       : {
-          stage: [0, 0],
-          quality: [60],
-          transcedence: [0, 0],
+          stage: 0,
+          quality: 60,
+          transcedence: 0,
         },
     gem: !!target.gem ? target.gem : 5,
     card: !!target.card
@@ -93,23 +93,26 @@ export const raidSchema = (
   };
 };
 
-export const kamem = raidSchema({
-  raidname: "카멘",
-  itemlevel: {
-    suitability: [1610, 1630],
-    pluslevel: 5,
-  },
-  title: ["빛을 꺼뜨린 자"],
-  wepon: {
-    stage: [19, 23],
-    itemlevel: [1620, 1640],
-    quality: 90,
-  },
-  armor: {
-    stage: [19, 21],
-    itemlevel: [1610, 1630],
-    quality: 80,
-    transcedence: [0, 75],
-  },
-  gem: [8.5, 9.5],
-});
+export const general = {
+  kamem_normal: raidSchema({
+    raidname: "카멘_노말",
+    itemlevel: {
+      suitability: 1610,
+      pluslevel: 5,
+    },
+    title: ["빛을 꺼뜨린 자"],
+    wepon: {
+      stage: 20,
+      itemlevel: 1610,
+      quality: 90,
+      transcedence: 0,
+    },
+    armor: {
+      stage: 19,
+      itemlevel: 1610,
+      quality: 80,
+      transcedence: 45,
+    },
+    gem: [9, 7],
+  }),
+};
