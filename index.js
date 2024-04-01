@@ -128,7 +128,7 @@ function axios_character(target) {
 
       const profile = data.ArmoryProfile;
       userSpec.name = target;
-      userSpec.skilpoint = profile.TotalSkillPoint;
+      userSpec.skillpoint = profile.TotalSkillPoint;
       userSpec.itemlevel = profile.ItemAvgLevel;
       userSpec.title = profile.Title;
       userSpec.level = profile.CharacterLevel;
@@ -255,6 +255,7 @@ function axios_character(target) {
           if (!!!equipment[i]) return;
 
           tooltip = JSON.parse(equipment[i]?.Tooltip);
+          console.log(tooltip);
           const infotext = (target, type) => {
             let value = Object.values(tooltip);
             let result = value.filter((x) => x.type === target);
@@ -357,10 +358,10 @@ function axios_character(target) {
             userSpec.wepon.quality = Number(info.itemquality.split(" ")[2]);
             userSpec.wepon.transcendence = !!info.transendence
               ? Number(
-                  ce({ inner: info.transendence })
-                    .textContent.split(" ")[1]
-                    .replace("+", "")
-                )
+                ce({ inner: info.transendence })
+                  .textContent.split(" ")[1]
+                  .replace("+", "")
+              )
               : 0;
             userSpec.wepon.itemlevel = info.itemlevel;
           } else if (
@@ -368,18 +369,19 @@ function axios_character(target) {
             type === "상의" ||
             type === "하의" ||
             type === "장갑" ||
-            type === "어꺠"
+            type === "어깨"
           ) {
             armor.push({
+              elixir: 0,
               quality: Number(info.itemquality.split(" ")[2]),
               stage: Number(info.itemname.split(" ")[0].replace("+", "")),
-              itemlevel: info.itemlevel,
+              itemlevel: Number(info.itemlevel),
               transcendence: !!info.transendence
                 ? Number(
-                    ce({ inner: info.transendence })
-                      .textContent.split(" ")[1]
-                      .replace("+", "")
-                  )
+                  ce({ inner: info.transendence })
+                    .textContent.split(" ")[1]
+                    .replace("+", "")
+                )
                 : 0,
             });
           }
@@ -460,19 +462,20 @@ function axios_character(target) {
           a.quality += c.quality;
           a.stage += c.stage;
           a.transcendence += c.transcendence;
+          a.itemlevel += c.itemlevel;
           return a;
         },
         {
           quality: 0,
           stage: 0,
           transcendence: 0,
+          itemlevel: 0,
         }
       );
       userSpec.armor.quality = rounds(sumArmor.quality / armor.length);
       userSpec.armor.stage = rounds(sumArmor.stage / armor.length);
-      userSpec.armor.transcendence = rounds(
-        sumArmor.transcendence / armor.length
-      );
+      userSpec.armor.transcendence = rounds(sumArmor.transcendence);
+      userSpec.armor.itemlevel = rounds(sumArmor.itemlevel / armor.length);
 
       // // 악세
       eq_ce(6, 12);
@@ -912,4 +915,5 @@ function axios_character(target) {
 //     axios.get()
 // }
 // axios_auction()
+// axios_character("슈리릿");
 axios_character("개연구");

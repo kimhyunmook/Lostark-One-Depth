@@ -6,7 +6,7 @@ export const userSpec = {
     sum: 0,
     value: [],
   },
-  skilpoint: 0,
+  skillpoint: 0,
   title: "",
   wepon: {
     stage: 0,
@@ -42,15 +42,18 @@ export const raidSchema = (
       stage: 0,
       quality: 80,
       itemlevel: 0,
-      transcedence: 0,
+      transcendence: 0,
     },
     armor: {
       stage: 0,
       quality: 60,
-      transcedence: 0,
       itemlevel: 0,
+      transcendence: 0,
     },
-    gem: 5,
+    gem: {
+      attk: 5,
+      cool: 5
+    },
     card: [
       {
         title: "세상을 구하는 빛",
@@ -69,27 +72,30 @@ export const raidSchema = (
     wepon: !!target.wepon
       ? target.wepon
       : {
-          stage: 0,
-          itemlevel: 0,
-          quality: 80,
-          transcedence: 0,
-        },
+        stage: 0,
+        itemlevel: 0,
+        quality: 80,
+        transcendence: 0,
+      },
     armor: !!target.armor
       ? target.armor
       : {
-          stage: 0,
-          quality: 60,
-          transcedence: 0,
-        },
-    gem: !!target.gem ? target.gem : 5,
+        stage: 0,
+        quality: 60,
+        transcendence: 0,
+      },
+    gem: !!target.gem ? target.gem : {
+      attk: 5,
+      cool: 5
+    },
     card: !!target.card
       ? target.card
       : [
-          {
-            title: "세상을 구하는 빛",
-            awake: 18,
-          },
-        ],
+        {
+          title: "세상을 구하는 빛",
+          awake: 18,
+        },
+      ],
   };
 };
 
@@ -102,17 +108,20 @@ export const general = {
     },
     title: ["빛을 꺼뜨린 자"],
     wepon: {
-      stage: 20,
+      stage: 19, 
       itemlevel: 1610,
       quality: 90,
-      transcedence: 0,
+      transcendence: 0,
     },
     armor: {
-      stage: 19,
+      stage: 17,
       itemlevel: 1610,
       quality: 80,
-      transcedence: 45,
+      transcendence: 0,
     },
-    gem: [9, 7],
+    gem: {
+      attk: 9,
+      cool: 7
+    },
   }),
 };
