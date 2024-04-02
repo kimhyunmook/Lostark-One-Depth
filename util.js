@@ -193,3 +193,11 @@ export const title2 = (text, addClass) =>
 export const label = (label, value, style) =>
   `<b class="${style}">${label}</b> ${value}`;
 export const rounds = (target) => Math.round(target * 10) / 10;
+
+export const onlyNum = (target) => {
+  const reg = /[^0-9]/g;
+  let result = target.replace(reg, "");
+  result = parseInt(result);
+
+  return result;
+};

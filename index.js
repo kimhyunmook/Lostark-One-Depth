@@ -7,6 +7,7 @@ import {
   tooltip2,
   equipmentTooltip,
   rounds,
+  onlyNum,
 } from "./util.js";
 import { userSpec } from "./ schema.js";
 import { css } from "./class.js";
@@ -237,6 +238,7 @@ function axios_character(target) {
         });
 
         let tooltip, grade, style2, str, type;
+        let obj = {};
         let s = 16; // 이미지 사이즈
         for (let i = start; i < last; i++) {
           grade = equipment[i]?.Grade;
@@ -255,11 +257,11 @@ function axios_character(target) {
           if (!!!equipment[i]) return;
 
           tooltip = JSON.parse(equipment[i]?.Tooltip);
-          console.log(tooltip);
           const infotext = (target, type) => {
             let value = Object.values(tooltip);
             let result = value.filter((x) => x.type === target);
             let index = 0;
+
             switch (type) {
               case "상급 재련":
                 index = 2;
@@ -273,17 +275,64 @@ function axios_character(target) {
               result?.map((v, i) => {
                 let values = Object.values(v.value);
                 if (values?.length < 3) {
-                  if (values[0]?.topStr?.includes(type)) str = values[0].topStr;
+                  if (values[0]?.topStr?.includes(type)) {
+                    obj = values[0].contentStr;
+                    str = values[0].topStr;
+                  }
                 }
               });
-              str = ce({ element: "p", inner: str })
-                .textContent.replace("[초월] ", "Lv")
-                .split("단계");
 
-              str = !!str[1]
-                ? str[0] + `<b class="text-black"> +${str[1].trim()}</b>`
-                : null;
-              return str;
+              str = ce({ element: "p", inner: str });
+              let obj_v = Object.values(obj);
+              let arr = [];
+              switch (type) {
+                case "초월":
+                  str = str.textContent.replace("[초월] ", "Lv").split("단계");
+                  str = !!str[1]
+                    ? str[0] + `<b class="text-black"> +${str[1].trim()}</b>`
+                    : null;
+                  result = str;
+                  break;
+                case "연성 추가 효과":
+                  str = str.textContent.replace(type, "");
+                  obj_v.map((v, i) => {
+                    let bp = v.bPoint;
+                    let conStr = v.contentStr;
+                  });
+                  break;
+                case "엘릭서":
+                  arr = [];
+                  result = [];
+                  obj_v.map((v, i) => {
+                    v.contentStr = v.contentStr
+                      .replace("<br>", " ")
+                      .replace("(혼돈)", "")
+                      .replace("(질서)", "")
+                      .split(" ");
+                    v.contentStr = v.contentStr.reduce((a, c, i) => {
+                      if (!!c) a.push(c);
+                      return a;
+                    }, []);
+                    let conStr = ce({ inner: v.contentStr }).textContent.split(
+                      ","
+                    );
+                    arr.push({
+                      name: !!onlyNum(conStr[2])
+                        ? conStr[0] !== "[공용]"
+                          ? `[특옵]${conStr[1]}`
+                          : conStr[1]
+                        : conStr[0] !== "[공용]"
+                          ? `[특옵]${conStr[1]} ${conStr[2]}`
+                          : `${conStr[1]} ${conStr[2]}`,
+                      lv: !!onlyNum(conStr[2])
+                        ? onlyNum(conStr[2])
+                        : onlyNum(conStr[3]),
+                    });
+                  });
+                  result.push(arr);
+                  break;
+              }
+              return result;
             } else {
               result = result[index]?.value;
               if (typeof result === "object") {
@@ -326,7 +375,9 @@ function axios_character(target) {
                 )
                 .trim(),
               transendence: infotext("IndentStringGroup", "초월"),
+              elixir: infotext("IndentStringGroup", "엘릭서"),
             };
+            // console.log("info", info);
           } else {
             info = {
               itemname: infotext("NameTagBox"),
@@ -358,10 +409,10 @@ function axios_character(target) {
             userSpec.wepon.quality = Number(info.itemquality.split(" ")[2]);
             userSpec.wepon.transcendence = !!info.transendence
               ? Number(
-                ce({ inner: info.transendence })
-                  .textContent.split(" ")[1]
-                  .replace("+", "")
-              )
+                  ce({ inner: info.transendence })
+                    .textContent.split(" ")[1]
+                    .replace("+", "")
+                )
               : 0;
             userSpec.wepon.itemlevel = info.itemlevel;
           } else if (
@@ -371,19 +422,36 @@ function axios_character(target) {
             type === "장갑" ||
             type === "어깨"
           ) {
-            armor.push({
-              elixir: 0,
+            let armor_info = {
               quality: Number(info.itemquality.split(" ")[2]),
               stage: Number(info.itemname.split(" ")[0].replace("+", "")),
               itemlevel: Number(info.itemlevel),
               transcendence: !!info.transendence
                 ? Number(
-                  ce({ inner: info.transendence })
-                    .textContent.split(" ")[1]
-                    .replace("+", "")
-                )
+                    ce({ inner: info.transendence })
+                      .textContent.split(" ")[1]
+                      .replace("+", "")
+                  )
                 : 0,
-            });
+              elixirOption: [],
+              elixir: 0,
+            };
+            armor_info.elixir = info.elixir.reduce((a, c, i) => {
+              let lvsum = c.reduce((a2, c2, i2) => {
+                if (type === "투구" || type === "장갑") {
+                  let special = "[특옵]";
+                  if (c2.name.includes(special)) {
+                    armor_info.elixirOption.push(c2.name.replace(special, ""));
+                  }
+                }
+                a2 += c2.lv;
+                return a2;
+              }, 0);
+              a += lvsum;
+              return a;
+            }, 0);
+            armor.push(armor_info);
+            // console.log(armor_info);
           }
 
           const typecover = ce({
@@ -459,6 +527,10 @@ function axios_character(target) {
       eq_ce(0, 6);
       let sumArmor = armor.reduce(
         (a, c, i) => {
+          if (c.elixirOption.length > 0) {
+            a.elixirOption.push(c.elixirOption);
+          }
+          a.elixir += c.elixir;
           a.quality += c.quality;
           a.stage += c.stage;
           a.transcendence += c.transcendence;
@@ -466,12 +538,20 @@ function axios_character(target) {
           return a;
         },
         {
+          elixirOption: [],
+          elixir: 0,
           quality: 0,
           stage: 0,
           transcendence: 0,
           itemlevel: 0,
         }
       );
+      console.log(sumArmor);
+      userSpec.elixir.lv = sumArmor.elixir;
+      userSpec.elixir.special =
+        sumArmor.elixirOption[0][0] === sumArmor.elixirOption[1][0]
+          ? true
+          : false;
       userSpec.armor.quality = rounds(sumArmor.quality / armor.length);
       userSpec.armor.stage = rounds(sumArmor.stage / armor.length);
       userSpec.armor.transcendence = rounds(sumArmor.transcendence);
