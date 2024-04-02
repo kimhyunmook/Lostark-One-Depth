@@ -1,5 +1,5 @@
 export const css = {
-  xCenter: "left-1/2 translate-x-[-50%]",
+  xCenter: " left-1/2 translate-x-[-50%]",
   gradient: (from, to) => {
     return ` bg-gradient-to-br from-[${from}] to-[${to}]`
   },

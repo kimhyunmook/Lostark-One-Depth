@@ -115,7 +115,7 @@ function axios_character(target) {
       }
 
       outputview.innerHTML = null;
-      console.log("full data", data);
+      // console.log("full data", data);
 
       //footer 추가전까지
       const character = ce({
@@ -139,28 +139,35 @@ function axios_character(target) {
         className: "profile-cover relative rounded-lg p-2 bg-[#15181D]",
         inner: title("User Profile"),
       });
+      const specButton = ce({
+        element: "button",
+        className: "specButton bg-green-500 absolute top-6 text-white font-black text-xl p-2 w-40 rounded-lg hover:bg-green-600 active:text-white" + css.xCenter,
+        inner: 'SPEC 검사',
+        append: profilecover
+      })
+
       const infocover = ce({
         element: "div",
         className:
           "profile-info-cover p-2 absolute h-full max-h-[600px] min-w-[400px]",
         append: profilecover,
       });
-      const statscover = ce({
-        element: "div",
-        className: "profile-stats-cover absolute bottom-1",
-        inner: title2("특성"),
-        append: profilecover,
-      });
+      // const statscover = ce({
+      //   element: "div",
+      //   className: "profile-stats-cover absolute bottom-1",
+      //   inner: title2("특성"),
+      //   append: profilecover,
+      // });
       /** 특성 */
       let states = [];
       profile.Stats?.map((el) => {
         let allpotion = 66;
-        ce({
-          element: "p",
-          className: "stats",
-          inner: label(el.Type, el.Value),
-          append: statscover,
-        });
+        // ce({
+        //   element: "p",
+        //   className: "stats",
+        //   inner: label(el.Type, el.Value),
+        //   append: statscover,
+        // });
         if (
           el.Value - allpotion > 100 &&
           el.Type !== "공격력" &&
@@ -409,10 +416,10 @@ function axios_character(target) {
             userSpec.wepon.quality = Number(info.itemquality.split(" ")[2]);
             userSpec.wepon.transcendence = !!info.transendence
               ? Number(
-                  ce({ inner: info.transendence })
-                    .textContent.split(" ")[1]
-                    .replace("+", "")
-                )
+                ce({ inner: info.transendence })
+                  .textContent.split(" ")[1]
+                  .replace("+", "")
+              )
               : 0;
             userSpec.wepon.itemlevel = info.itemlevel;
           } else if (
@@ -428,10 +435,10 @@ function axios_character(target) {
               itemlevel: Number(info.itemlevel),
               transcendence: !!info.transendence
                 ? Number(
-                    ce({ inner: info.transendence })
-                      .textContent.split(" ")[1]
-                      .replace("+", "")
-                  )
+                  ce({ inner: info.transendence })
+                    .textContent.split(" ")[1]
+                    .replace("+", "")
+                )
                 : 0,
               elixirOption: [],
               elixir: 0,
@@ -530,7 +537,7 @@ function axios_character(target) {
           if (c.elixirOption.length > 0) {
             a.elixirOption.push(c.elixirOption);
           }
-          a.elixir += c.elixir;
+          a.elixir += !!c.elixir ? c.elixir : 0;
           a.quality += c.quality;
           a.stage += c.stage;
           a.transcendence += c.transcendence;
@@ -546,12 +553,12 @@ function axios_character(target) {
           itemlevel: 0,
         }
       );
-      console.log(sumArmor);
       userSpec.elixir.lv = sumArmor.elixir;
-      userSpec.elixir.special =
-        sumArmor.elixirOption[0][0] === sumArmor.elixirOption[1][0]
-          ? true
-          : false;
+      if (sumArmor.elixirOption.length > 1)
+        userSpec.elixir.special =
+          (sumArmor?.elixirOption[0][0] === sumArmor?.elixirOption[1][0]
+            ? true
+            : false);
       userSpec.armor.quality = rounds(sumArmor.quality / armor.length);
       userSpec.armor.stage = rounds(sumArmor.stage / armor.length);
       userSpec.armor.transcendence = rounds(sumArmor.transcendence);
@@ -882,8 +889,43 @@ function axios_character(target) {
 
       outputview.append(character);
 
-      Calculator(userSpec);
+      const cal = Calculator(userSpec);
+      console.log('cal', cal)
+      const specDiv = ce({
+        className: 'specDiv z-20 bg-[rgba(0,0,0,0.95)] absolute w-[90%] h-[90%] p-2 left-1/2 translate-x-[-50%] top-1/2 translate-y-[-50%] rounded-xl',
+        inner: title('User Spec', "text-center text-5xl"),
+        append: profilecover
+      })
+      const specDivCloseBtn = ce({
+        className: `closebtn`,
+        inner: "",
+        append: specDiv
+      })
 
+      const specContent = ce({
+        className: 'specCotent flex flex-wrap absolute w-[80%] left-1/2 translate-x-[-50%] top-1/2 translate-y-[-50%]',
+        append: specDiv
+      })
+      ce({
+        element: 'h3',
+        className: 'text-white text-4xl text-center mb-5 w-full',
+        inner: `TOTAL 점수: ${cal.total}`,
+        append: specContent
+      })
+      let userState = '';
+      switch (cal.state) {
+        case 'cut spec':
+          userState = 'Cut Line';
+          style = 'bg-red-700'
+          break;
+
+      }
+      ce({
+        element: 'p',
+        className: `text-white text-center text-4xl p-3 ${style} m-auto rounded-xl`,
+        inner: `${cal.state}`,
+        append: specContent
+      })
       // siblings
       // axios
       //   .get(url + `/characters/${target}/siblings`, { headers })
@@ -995,5 +1037,5 @@ function axios_character(target) {
 //     axios.get()
 // }
 // axios_auction()
-// axios_character("슈리릿");
-axios_character("개연구");
+axios_character("슈리릿");
+// axios_character("개연구");

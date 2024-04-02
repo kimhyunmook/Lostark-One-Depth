@@ -186,8 +186,8 @@ export function tooltip2(target) {
   tooltipcover.append(target);
 }
 
-export const title = (text) =>
-  `<h2 class="title-h2 ${css.big_title}">${text}</h2>`;
+export const title = (text, addClass) =>
+  `<h2 class="title-h2 ${addClass} ${css.big_title} ">${text}</h2>`;
 export const title2 = (text, addClass) =>
   `<h3 class="${css.small_title} ${addClass}">${text}</h3>`;
 export const label = (label, value, style) =>
