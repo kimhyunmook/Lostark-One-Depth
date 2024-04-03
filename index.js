@@ -9,9 +9,12 @@ import {
   rounds,
   onlyNum,
 } from "./util.js";
-import { userSpec } from "./ schema.js";
+import { endContent, userSpec } from "./js/schema.js";
 import { css } from "./class.js";
-import Calculator from "./calculator.js";
+import Calculator from "./js/calculator.js";
+import Spec_div from "./js/spec_div.js";
+import Raid_list from "./js/raid_list.js";
+import Popup from "./js/popup.js";
 
 const url = "https://developer-lostark.game.onstove.com";
 const API_KEY =
@@ -23,13 +26,7 @@ const headers = {
 };
 
 const nav = "nav.menu";
-// const menu_cover = document.querySelectorAll(`${nav} .menu-cover.active a`);
-// [...menu_cover].map((v, i) => {
-//     v.addEventListener('click', (e) => {
-//         const t = e.currentTarget;
-//         t.parentNode.classList.add('on')
-//     })
-// });
+
 const closebtn = document.querySelectorAll(
   `${nav} .menu-cover.active .closebtn`
 );
@@ -37,32 +34,12 @@ const closebtn = document.querySelectorAll(
   v.addEventListener("click", (e) => {
     e.preventDefault();
     const t = e.currentTarget;
-    // t.parentNode.parentNode.parentNode.parentNode.classList.remove('on');
     t.parentNode.children[0].value = "";
   });
 });
-
-const nav_news_li = document.querySelectorAll(`${nav} .news li`);
-[...nav_news_li].map((el, i) => {
-  if (el.classList[1] === "on") {
-    axios_news(el.classList[0]);
-  }
-
-  el.addEventListener("click", async (e) => {
-    const t = e.currentTarget;
-    [...nav_news_li].map((e) => e.classList.remove("on"));
-    const target = t.classList[0];
-    await t.classList.add("on");
-    outputview.innerHTML = null;
-    axios_news(target);
-  });
-});
-
-// const nav_characters_li = document.querySelector(`${nav} .characters li`)
-// nav_characters_li.addEventListener('click', (e) => {
-//     const t = e.currentTarget;
-//     t.className.includes('active') ? t.classList.remove('active') : t.classList.add('active');
-// })
+const header = document.querySelector("header");
+const raidList = Raid_list({ header });
+Popup();
 
 const characters_serarch = document.querySelector(`${nav} .characters-search`);
 characters_serarch.addEventListener("click", (e) => {
@@ -76,32 +53,6 @@ characters_serarch.addEventListener("click", (e) => {
   }
   axios_character(user_name.value);
 });
-
-// function axios_news(target) {
-//     axios.get(url + `/news/${target}`, {
-//         headers
-//     })
-//         .then((res) => {
-//             const data = res.data
-//             data?.map((list, index) => {
-//                 const cover = ce({ element: "a", className: 'cover ' + css_cover, link: list.Link, type: list.Type });
-//                 ce({ element: "h3", className: 'title', inner: list.Title, append: cover });
-//                 if (target === 'events') {
-//                     ce({ element: 'img', className: 'thumbnail', inner: list.Thumbnail, append: cover })
-//                     date = ce({ element: 'p', className: 'event-date', inner: list.StartDate + '~' + list.EndDate, append: cover })
-//                     !!list.RewardDate ? ce({ element: 'p', className: 'event-rewardDate', inner: list.StartDate + '~' + list.RewardDate, append: cover })
-//                         : null
-//                 } else {
-//                     date = ce({ element: 'p', className: "notice-date", inner: list.Date, append: cover })
-//                 }
-//                 outputview.append(cover);
-//             })
-
-//         })
-//         .catch((err) => {
-//             console.error(err)
-//         })
-// }
 
 function axios_character(target) {
   let style = "";
@@ -141,10 +92,23 @@ function axios_character(target) {
       });
       const specButton = ce({
         element: "button",
-        className: "specButton bg-green-500 absolute top-6 text-white font-black text-xl p-2 w-40 rounded-lg hover:bg-green-600 active:text-white" + css.xCenter,
-        inner: 'SPEC 검사',
-        append: profilecover
-      })
+        className:
+          "specButton bg-green-500 absolute top-6 text-white font-black text-xl p-2 w-40 rounded-lg hover:bg-green-600 active:text-white" +
+          css.xCenter,
+        inner: "SPEC 검사",
+        append: profilecover,
+      });
+      specButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (!!!document.querySelector(".specDiv")) {
+          const raid = Object.values(endContent).filter(
+            (x) => x.raidname === raidList.value
+          )[0];
+          const cal = Calculator(userSpec, raid);
+          console.log("cal", cal);
+          Spec_div({ profilecover, cal });
+        }
+      });
 
       const infocover = ce({
         element: "div",
@@ -416,10 +380,10 @@ function axios_character(target) {
             userSpec.wepon.quality = Number(info.itemquality.split(" ")[2]);
             userSpec.wepon.transcendence = !!info.transendence
               ? Number(
-                ce({ inner: info.transendence })
-                  .textContent.split(" ")[1]
-                  .replace("+", "")
-              )
+                  ce({ inner: info.transendence })
+                    .textContent.split(" ")[1]
+                    .replace("+", "")
+                )
               : 0;
             userSpec.wepon.itemlevel = info.itemlevel;
           } else if (
@@ -435,10 +399,10 @@ function axios_character(target) {
               itemlevel: Number(info.itemlevel),
               transcendence: !!info.transendence
                 ? Number(
-                  ce({ inner: info.transendence })
-                    .textContent.split(" ")[1]
-                    .replace("+", "")
-                )
+                    ce({ inner: info.transendence })
+                      .textContent.split(" ")[1]
+                      .replace("+", "")
+                  )
                 : 0,
               elixirOption: [],
               elixir: 0,
@@ -556,9 +520,9 @@ function axios_character(target) {
       userSpec.elixir.lv = sumArmor.elixir;
       if (sumArmor.elixirOption.length > 1)
         userSpec.elixir.special =
-          (sumArmor?.elixirOption[0][0] === sumArmor?.elixirOption[1][0]
+          sumArmor?.elixirOption[0][0] === sumArmor?.elixirOption[1][0]
             ? true
-            : false);
+            : false;
       userSpec.armor.quality = rounds(sumArmor.quality / armor.length);
       userSpec.armor.stage = rounds(sumArmor.stage / armor.length);
       userSpec.armor.transcendence = rounds(sumArmor.transcendence);
@@ -888,102 +852,6 @@ function axios_character(target) {
       avatar_ce("이동 효과");
 
       outputview.append(character);
-
-      const cal = Calculator(userSpec);
-      console.log('cal', cal)
-      const specDiv = ce({
-        className: 'specDiv z-20 bg-[rgba(0,0,0,0.95)] absolute w-[90%] h-[90%] p-2 left-1/2 translate-x-[-50%] top-1/2 translate-y-[-50%] rounded-xl',
-        inner: title('User Spec', "text-center text-5xl"),
-        append: profilecover
-      })
-      const specDivCloseBtn = ce({
-        className: `closebtn`,
-        inner: "",
-        append: specDiv
-      })
-
-      const specContent = ce({
-        className: 'specCotent flex flex-wrap absolute w-[80%] left-1/2 translate-x-[-50%] top-1/2 translate-y-[-50%]',
-        append: specDiv
-      })
-      ce({
-        element: 'h3',
-        className: 'text-white text-4xl text-center mb-5 w-full',
-        inner: `TOTAL 점수: ${cal.total}`,
-        append: specContent
-      })
-      let userState = '';
-      switch (cal.state) {
-        case 'cut spec':
-          userState = 'Cut Line';
-          style = 'bg-red-700'
-          break;
-
-      }
-      ce({
-        element: 'p',
-        className: `text-white text-center text-4xl p-3 ${style} m-auto rounded-xl`,
-        inner: `${cal.state}`,
-        append: specContent
-      })
-      // siblings
-      // axios
-      //   .get(url + `/characters/${target}/siblings`, { headers })
-      //   .then((res) => {
-      //     const data = res.data;
-
-      //     ce({
-      //       element: "h3",
-      //       className: "characters",
-      //       inner: "보유캐릭터",
-      //       append: outputview,
-      //     });
-      //     data?.map((char, index) => {
-      //       const cover = ce({ element: "div", className: "cover" });
-
-      //       ce({
-      //         element: "p",
-      //         className: "server",
-      //         inner: label("서버", char.ServerName),
-      //         append: cover,
-      //       });
-      //       ce({
-      //         element: "p",
-      //         className: "character-name",
-      //         inner: label("캐릭터 이름", char.CharacterName),
-      //         append: cover,
-      //       });
-      //       ce({
-      //         element: "p",
-      //         className: "character-level",
-      //         inner: label("캐릭터 레벨", char.CharacterLevel),
-      //         append: cover,
-      //       });
-      //       ce({
-      //         element: "p",
-      //         className: "character-class",
-      //         inner: label("클래스", char.CharacterClassName),
-      //         append: cover,
-      //       });
-      //       ce({
-      //         element: "p",
-      //         className: "server",
-      //         inner: label("현재 아이템 레벨", char.ItemAvgLevel),
-      //         append: cover,
-      //       });
-      //       ce({
-      //         element: "p",
-      //         className: "server",
-      //         inner: label("최고 달성 레벨", char.ItemMaxLevel),
-      //         append: cover,
-      //       });
-
-      //       outputview.append(cover);
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     console.error(err);
-      //   });
     })
     .catch((err) => {
       console.error(err);
@@ -1037,5 +905,6 @@ function axios_character(target) {
 //     axios.get()
 // }
 // axios_auction()
-axios_character("슈리릿");
+// axios_character("슈리릿");
+// axios_character("필례");
 // axios_character("개연구");

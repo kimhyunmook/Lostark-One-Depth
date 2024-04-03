@@ -187,7 +187,7 @@ export function tooltip2(target) {
 }
 
 export const title = (text, addClass) =>
-  `<h2 class="title-h2 ${addClass} ${css.big_title} ">${text}</h2>`;
+  `<h2 class="title-h2 ${addClass} ${css.big_title} text-slate-300">${text}</h2>`;
 export const title2 = (text, addClass) =>
   `<h3 class="${css.small_title} ${addClass}">${text}</h3>`;
 export const label = (label, value, style) =>
