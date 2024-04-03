@@ -1,8 +1,6 @@
-import { general } from "./ schema.js";
-
-export default function Calculator(userSpec, raidname) {
-  console.log(general.kamem_normal);
-  console.log(userSpec);
+export default function Calculator(userSpec, raidname = {}) {
+  //   console.log(endContent.kamen_normal);
+  //   console.log(userSpec);
   const [cut, nice, best, over, end] = [60, 70, 80, 90, 100];
   let total = 0;
   let state = "bad";
@@ -40,29 +38,46 @@ export default function Calculator(userSpec, raidname) {
               max = 5;
               min = -5;
               break;
-            case "transcendence":
-              max = 126;
-              min = 0;
-              break;
             //gem
             case "attk":
               max = 0;
               min = -1;
               break;
             case "cool":
-              max = 0.5;
+              max = 0;
               min = -1;
               break;
           }
 
           let cp = Math.round((uv - rv) * 10) / 10;
           let ifitem = uk === "stage" || uk === "itemlevel";
-          if (uv >= rv && !!rv) {
+          if (uk === "transcendence") {
+            max = 1;
+            min = 1;
+            let divide = type === "armor" ? 5 : 1;
+            let userlv = Math.floor(uv / 5 / divide);
+            let raidlv = Math.floor(rv / 5 / divide);
+            let cp = userlv - raidlv;
+            // console.log(userlv, raidlv);
+            console.log(userlv);
+            if (userlv === 4) {
+              result.push(100);
+            } else if (cp >= max) {
+              result.push(100);
+            } else if (cp === 0) {
+              result.push(70);
+            } else if (cp >= min) {
+              result.push(40);
+            } else {
+              result.push(0);
+            }
+          } else if (uv >= rv && !!rv) {
             if (cp > max) {
               score = 100;
               if (ifitem) item.push(score);
               else result.push(score);
             } else {
+              if (max === 0) max = 1;
               let sign = normal / max;
               if (cp === 0) cp = 1;
               score = sign * cp;
@@ -79,11 +94,14 @@ export default function Calculator(userSpec, raidname) {
               else result.push(0);
             }
           }
-          // console.log(uk, uv)
-          // console.log(rk, rv)
-          // console.log(result, item)
+          if (type === "armor") {
+            // console.log(uk, uv);
+            // console.log(rk, rv);
+            // console.log(result, item);
+          }
         }
       });
+      if (type === "armor") console.log(result, item);
       let divide = item.length > 0 ? 2 : 1;
       item =
         item.length > 0 ? item.reduce((a, c) => (a += c), 0) / item.length : 0;
@@ -92,10 +110,9 @@ export default function Calculator(userSpec, raidname) {
       );
       // console.log(resScore)
     } else {
-      let [max, min] = [100, 0]
-      let cp, score = 0;
+      let score = 0;
       switch (type) {
-        case 'elixir':
+        case "elixir":
           if (user.special && user.lv >= 40) score += 100;
           else if (raid === 0) {
             score += 50;
@@ -110,44 +127,63 @@ export default function Calculator(userSpec, raidname) {
     return resScore;
   };
 
-  const wepon = compare(userSpec.wepon, general.kamem_normal.wepon, "wepon");
-  const armor = compare(userSpec.armor, general.kamem_normal.armor);
-  const gem = compare(userSpec.gem, general.kamem_normal.gem);
-  const elixir = compare(userSpec.elixir, general.kamem_normal.elixir, 'elixir');
-  const level = userSpec.level === 60 ? 100 : userSpec.level < 60 && userSpec.level >= 55 ? 50 : 0;
+  const wepon = compare(userSpec.wepon, raidname.wepon, "wepon");
+  const armor = compare(userSpec.armor, raidname.armor, "armor");
+  const gem = compare(userSpec.gem, raidname.gem, "gem"); //비교값
+  // const gem = gem_sco();
+  // function gem_sco() {
+  //   const attk = userSpec.gem.attk;
+  //   const cool = userSpec.gem.cool;
+  //   let sco = 70;
+  //   let result = Math.round(
+  //     (sco * (attk / 100) + (100 - sco) * (cool / 100)) * 10
+  //   );
+  //   console.log(result);
+  //   return result;
+  // } //절대값
+  const elixir = compare(userSpec.elixir, raidname.elixir, "elixir");
+  const level =
+    userSpec.level === 60
+      ? 100
+      : userSpec.level < 60 && userSpec.level >= 55
+        ? 50
+        : 0;
   const skillPoint = Math.round((100 / 420) * userSpec.skillpoint);
   const status = Math.round((100 / 2500) * userSpec.status.sum);
   // const statusName = Object.values(userSpec.status.value)?.reduce((a, c) => {
   //   a.push(c.name);
   //   return a;
   // }, []);
-  const title = [...general.kamem_normal.title].reduce((a, c) => {
-    if (c === userSpec.title) a += 100;
-    return a;
-  }, 0);
-  const cardList = [{ name: '세상을 구하는 빛' },
-  { name: "세 우마르가 오리라", score: 50 },
-  { name: "카제로스의 군단장", },
-  { name: '라제니스의 운명', score: 50 }]
+  const title = !!raidname
+    ? [...raidname?.title].reduce((a, c) => {
+        if (c === userSpec.title) a += 100;
+        return a;
+      }, 0)
+    : 0;
+  const cardList = [
+    { name: "세상을 구하는 빛" },
+    { name: "세 우마르가 오리라", score: 50 },
+    { name: "카제로스의 군단장" },
+    { name: "라제니스의 운명", score: 50 },
+  ];
   const card = () => {
     let arr = [];
     let result = 0;
     cardList.map((v, i) => {
-      const t = [...userSpec.card].filter(x => {
+      const t = [...userSpec.card].filter((x) => {
         if (x.title === v.name) {
           x.score = !!v.score ? v.score : 100;
           x.score = x.score * (x.awake / x.max);
-          return x
+          return x;
         }
       });
-      if (t.length > 0)
-        arr.push(t[0])
-    })
+      if (t.length > 0) arr.push(t[0]);
+    });
     if (arr.length > 1) {
-      result = arr.reduce((a, c) => a += c.score, 0)
-    } else result = arr[0].score;
+      result = arr.reduce((a, c) => (a += c.score), 0);
+    } else result = arr[0]?.score;
     return result;
-  }
+  };
   let res = {
     level,
     wepon,
@@ -159,54 +195,63 @@ export default function Calculator(userSpec, raidname) {
     elixir,
     card: card(),
   };
-  console.log('res', res);
+
+  console.log("res", res);
 
   total = Object.values(res)?.reduce((a, c, i) => {
-    let max, score = 0;
+    let max,
+      score = 0;
 
     switch (Object.keys(res)[i]) {
-      case 'level': max = 3
+      case "level":
+        max = 3;
         break;
-      case 'wepon': max = 25;
+      case "wepon":
+        max = 25;
         break;
-      case 'armor': max = 15;
+      case "armor":
+        max = 13;
         break;
-      case 'gem': max = 20;
+      case "gem":
+        max = 22;
         break;
-      case 'skillPoint': max = 3;
+      case "skillPoint":
+        max = 3;
         break;
-      case 'status': max = 3;
+      case "status":
+        max = 3;
         break;
-      case 'title': max = 3;
+      case "title":
+        max = 3;
         break;
-      case 'elixir': max = 15;
+      case "elixir":
+        max = 15;
         break;
-      case 'card': max = 13;
+      case "card":
+        max = 13;
         break;
     }
     score = max * (c / 100);
-    if (!!score)
-      a += score;
+    if (!!score) a += score;
     return a;
-  }, total)
+  }, total);
 
-
-  console.log('total', total);
+  console.log("total", total);
   if (total < cut) {
-    state = 'bad spec';
+    state = "bad spec";
   } else if (total >= cut && total < nice) {
-    state = 'cut spec';
+    state = "cut spec";
   } else if (total >= nice && total < best) {
-    state = 'nice spec';
+    state = "nice spec";
   } else if (total >= best && total < over) {
-    state = 'best spec'
+    state = "best spec";
   } else if (total < end) {
-    state = 'over spec';
+    state = "over spec";
   } else {
-    state = 'end spec';
+    state = "end spec";
   }
   return {
-    total,
+    total: Math.round(total * 10) / 10,
     state,
   };
 }
