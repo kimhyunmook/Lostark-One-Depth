@@ -39,7 +39,7 @@ const closebtn = document.querySelectorAll(
 });
 const header = document.querySelector("header");
 const raidList = Raid_list({ header });
-Popup();
+// Popup();
 
 const characters_serarch = document.querySelector(`${nav} .characters-search`);
 characters_serarch.addEventListener("click", (e) => {
@@ -66,7 +66,7 @@ function axios_character(target) {
       }
 
       outputview.innerHTML = null;
-      // console.log("full data", data);
+      console.log("full data", data);
 
       //footer 추가전까지
       const character = ce({
@@ -373,17 +373,21 @@ function axios_character(target) {
               qualitystyle = "bg-[#91F202]";
               break;
           }
+
+          console.log(equipment[i].Grade)
           if (type === "무기") {
-            userSpec.wepon.stage = Number(
+            userSpec.wepon.stage = equipment[i]?.Grade === '에스더' ? Number(
+              info.itemname.split(" ")[0].replace("+", "")
+            ) + 17 : Number(
               info.itemname.split(" ")[0].replace("+", "")
             );
             userSpec.wepon.quality = Number(info.itemquality.split(" ")[2]);
             userSpec.wepon.transcendence = !!info.transendence
               ? Number(
-                  ce({ inner: info.transendence })
-                    .textContent.split(" ")[1]
-                    .replace("+", "")
-                )
+                ce({ inner: info.transendence })
+                  .textContent.split(" ")[1]
+                  .replace("+", "")
+              )
               : 0;
             userSpec.wepon.itemlevel = info.itemlevel;
           } else if (
@@ -399,10 +403,10 @@ function axios_character(target) {
               itemlevel: Number(info.itemlevel),
               transcendence: !!info.transendence
                 ? Number(
-                    ce({ inner: info.transendence })
-                      .textContent.split(" ")[1]
-                      .replace("+", "")
-                  )
+                  ce({ inner: info.transendence })
+                    .textContent.split(" ")[1]
+                    .replace("+", "")
+                )
                 : 0,
               elixirOption: [],
               elixir: 0,
@@ -425,11 +429,12 @@ function axios_character(target) {
             // console.log(armor_info);
           }
 
+          let h = quality > 0 ? " h-20 " : "h-16";
+          let pb = quality < 0 ? "pb-6" : "pb-2";
           const typecover = ce({
-            className: "equipments mb-4 flex border-b pb-2",
+            className: "equipments mb-4 flex border-b " + pb,
             append: boxcover,
           });
-          let h = quality > 0 ? " h-20 " : "h-16";
           const imgcover = ce({
             className:
               "equipment-img-cover flex w-[64px] relative rounded-md overflow-hidden bg-gradient-to-br mr-3 " +
@@ -541,7 +546,7 @@ function axios_character(target) {
       });
       const gemeffectscover = ce({
         element: "div",
-        className: "gemeffects-cover flex justify-between relative",
+        className: "gemeffects-cover grid grid-cols-7 gap-4 lg:grid-cols-11  justify-between relative bg-white p-4 rounded-lg",
         append: gemcover,
       });
       const attkgem = [];
@@ -573,14 +578,13 @@ function axios_character(target) {
           to = "#103550";
         }
         const slotbox = ce({
-          element: "div",
           className:
-            "gem-slot group/gems bg-white p-1 rounded-md mb-2 lg:relative col-span-1 " +
+            "gem-slot group/gems bg-white p-1 rounded-md lg:relative col-span-1 lg:w-[64px] lg:h-[64px] w-[64px] h-[64px]" +
             css.gradient(from, to),
           append: gemeffectscover,
         });
         const imgcover = ce({
-          className: "gem-imgcover  max-w-[64px]",
+          className: "gem-imgcover  w-full",
           append: slotbox,
         });
         ce({
@@ -591,7 +595,8 @@ function axios_character(target) {
         });
 
         const gemdiv = ce({
-          className: `gems-cover-div min-w-[200px] z-20 rounded-lg group-hover/gems:block absolute bg-[rgba(0,0,0,0.9)] p-3 z-10 top-full  ${css.xCenter} hidden`,
+          className: `gems-cover-div min-w-[300[px]] lg:min-w-[200px] z-20 rounded-xl 
+          group-hover/gems:block absolute bg-[rgba(0,0,0,0.9)] p-3 z-10 top-full  ${css.xCenter} hidden`,
           append: slotbox,
         });
         ce({
@@ -619,6 +624,20 @@ function axios_character(target) {
           append: gemdiv,
         });
       });
+      if (gemeffects.length < 11) {
+        for (let i = 0; i < 11 - gemeffects.length; i++) {
+          const slotbox = ce({
+            className:
+              "gem-slot lg:w-[64px] lg:h-[64px] w-[64px] h-[64px] group/gems p-1 rounded-md lg:relative col-span-1 " + css.gradient('#222', '#999'),
+            append: gemeffectscover,
+          });
+          ce({
+            className: "w-full h-full rounded-lg text-white flex items-center justify-center",
+            inner: 'EMPTY',
+            append: slotbox
+          })
+        }
+      }
 
       const attkgemCal = rounds(
         attkgem.reduce((a, c, i) => (a += c), 0) / attkgem.length
@@ -627,7 +646,6 @@ function axios_character(target) {
       const coolgemCal = rounds(
         coolgem.reduce((a, c, i) => (a += c), 0) / coolgem.length
       );
-
       userSpec.gem.attk = attkgemCal;
       userSpec.gem.cool = coolgemCal;
 
@@ -640,7 +658,8 @@ function axios_character(target) {
       });
       const cards = ce({
         element: "div",
-        className: "cards grid gap-1 grid-cols-3 lg:grid-cols-6",
+        // className: "cards flex flex-wrap items-center justify-between bg-white rounded-lg p-4",
+        className: "cards grid gap-1 grid-cols-3 md:grid-cols-6 bg-white rounded-lg p-1",
         append: cardcover,
       });
       const cardSpec = [];
@@ -668,14 +687,14 @@ function axios_character(target) {
 
         ce({
           element: "img",
-          className: "card-img w-[136px] h-[207px] pt-1 pl-1 pb-1 ",
+          className: "card-img w-[136px] h-[207px] pt-1 pl-1 pb-1 m-auto md:m-0",
           inner: el.Icon,
           append: typecover,
         });
         const teduri = ce({
           element: "div",
           className:
-            "w-full h-full max-w-[140px] absolute z-10 top-0 left-0 " + style,
+            "w-full h-full max-w-[140px] translate-x-[-50%] left-[50%] md:translate-x-0 absolute z-10 top-0 md:left-0 " + style,
           append: typecover,
         });
         const awake = ce({
@@ -736,37 +755,42 @@ function axios_character(target) {
           awake: !!awake ? awake : 0,
         };
         cardSpec.push(cardInfo);
+        const cardeffectscover = ce({
+          className: "card-effect-cover",
+          append: cardeffects
+        })
         ce({
           element: "p",
           className:
-            "card-slot mb-3 text-xl bg-violet-100 text-indigo-600 rounded-full pl-3 pr-3  inline-block overflow-hidden",
+            "card-slot mb-3 text-xl bg-violet-100 text-violet-700 rounded-lg p-1 pr-2 pl-2  inline-block overflow-hidden",
           inner:
             `<b class='pr-2 pt-1 pb-1 border-r border-solid border-violet-600 font-black'>카드 슬롯</b>  ` +
             el.CardSlots.map((t) => ` ${t + 1}`),
-          append: cardeffects,
+          append: cardeffectscover,
         });
         el.Items.map((t, i2) => {
           ce({
             element: "p",
             className: "card-items text-white text-thin text-sm mb-2",
             inner: t.Name + " " + t.Description,
-            append: cardeffects,
+            append: cardeffectscover,
           });
         });
       });
       userSpec.card = cardSpec;
+
       // ------------------각인
       const engraving = data.ArmoryEngraving;
       const engravingeffectcover = ce({
         ...coverInit,
-        className: `engraving-effects grid grid-cols-3`,
-        inner: title("각인", `col-span${engraving?.Effects.length}`),
+        className: `engraving-effects grid grid-cols-2 md:grid-cols-3`,
+        inner: title("각인", ``),
       });
-
+      const userEngra = [];
       engraving?.Effects.map((el) => {
         const typecover = ce({
           element: "div",
-          className: "engraving-cover flex mb-3",
+          className: "engraving-cover rounded-lg  p-4 flex m-3 bg-[#15181d]",
           append: engravingeffectcover,
         });
         ce({
@@ -789,7 +813,13 @@ function axios_character(target) {
           append: typecover,
         });
         tooltip2(text);
+        userEngra.push(Number(el.Name.split('Lv.')[1].trim()));
       });
+
+      userSpec.engraving = {
+        length: engraving.Effects.length,
+        lv: userEngra
+      }
 
       const avatars = !!data.ArmoryAvatars ? data.ArmoryAvatars : "";
       style = "";
@@ -907,4 +937,4 @@ function axios_character(target) {
 // axios_auction()
 // axios_character("슈리릿");
 // axios_character("필례");
-// axios_character("개연구");
+axios_character("영롱좌");

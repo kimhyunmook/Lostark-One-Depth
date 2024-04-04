@@ -1,6 +1,6 @@
 export default function Calculator(userSpec, raidname = {}) {
   //   console.log(endContent.kamen_normal);
-  //   console.log(userSpec);
+  console.log(userSpec);
   const [cut, nice, best, over, end] = [60, 70, 80, 90, 100];
   let total = 0;
   let state = "bad";
@@ -59,7 +59,7 @@ export default function Calculator(userSpec, raidname = {}) {
             let raidlv = Math.floor(rv / 5 / divide);
             let cp = userlv - raidlv;
             // console.log(userlv, raidlv);
-            console.log(userlv);
+            // console.log(userlv);
             if (userlv === 4) {
               result.push(100);
             } else if (cp >= max) {
@@ -101,7 +101,6 @@ export default function Calculator(userSpec, raidname = {}) {
           }
         }
       });
-      if (type === "armor") console.log(result, item);
       let divide = item.length > 0 ? 2 : 1;
       item =
         item.length > 0 ? item.reduce((a, c) => (a += c), 0) / item.length : 0;
@@ -156,9 +155,9 @@ export default function Calculator(userSpec, raidname = {}) {
   // }, []);
   const title = !!raidname
     ? [...raidname?.title].reduce((a, c) => {
-        if (c === userSpec.title) a += 100;
-        return a;
-      }, 0)
+      if (c === userSpec.title) a += 100;
+      return a;
+    }, 0)
     : 0;
   const cardList = [
     { name: "세상을 구하는 빛" },
@@ -184,6 +183,11 @@ export default function Calculator(userSpec, raidname = {}) {
     } else result = arr[0]?.score;
     return result;
   };
+  const engraving = userSpec.engraving.lv?.reduce((a, c, i) => {
+    a += c
+    return a
+  }, 0);
+
   let res = {
     level,
     wepon,
@@ -193,6 +197,7 @@ export default function Calculator(userSpec, raidname = {}) {
     status,
     title,
     elixir,
+    engraving,
     card: card(),
   };
 
@@ -204,16 +209,16 @@ export default function Calculator(userSpec, raidname = {}) {
 
     switch (Object.keys(res)[i]) {
       case "level":
-        max = 3;
+        max = 2;
         break;
       case "wepon":
         max = 25;
         break;
       case "armor":
-        max = 13;
+        max = 10;
         break;
       case "gem":
-        max = 22;
+        max = 20;
         break;
       case "skillPoint":
         max = 3;
@@ -230,9 +235,17 @@ export default function Calculator(userSpec, raidname = {}) {
       case "card":
         max = 13;
         break;
+      case "engraving":
+        console.log(c);
+        if (c === 15) a += 5
+        else if (c === 16) a += 6
+        else if (c === 17) a += 8
+        break;
     }
-    score = max * (c / 100);
+    if (!!max)
+      score = max * (c / 100);
     if (!!score) a += score;
+    if (a > 100) a = 100;
     return a;
   }, total);
 
