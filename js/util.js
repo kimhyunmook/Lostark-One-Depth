@@ -201,3 +201,9 @@ export const onlyNum = (target) => {
 
   return result;
 };
+export const getCookie = (name) => {
+  return document.cookie
+    ?.split(";")
+    .filter((x) => x.includes(name))[0]
+    ?.split("=")[1];
+};
