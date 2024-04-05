@@ -1,4 +1,4 @@
-import { ce, title2 } from "../util.js";
+import { ce, title2 } from "./util.js";
 import { endContent } from "./schema.js";
 
 export default function Raid_list({ header }) {

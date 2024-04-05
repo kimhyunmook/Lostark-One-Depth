@@ -1,25 +1,27 @@
-import { ce, title } from "../util.js";
+import { ce, label, title } from "./util.js";
 export default function Popup() {
   let popupcover = ce({
-    className: "fixed w-full h-full z-30 bg-[rgba(0,0,0,0.9)] top-0",
+    className: "fixed w-full h-full z-30 bg-[rgba(0,0,0,0.6)] top-0",
     append: document.body,
   });
   let popup = ce({
     className: `
-    popup absolute w-[80%] md:w-[30%] pt-10 pb-12 pr-9 pl-9 md:pt-7 md:pb-9 md:pr-5 md:pl-5 bg-[rgba(255,255,255,0.9)] z-30 left-1/2 top-1/2 translate-x-[-50%] 
+    popup absolute w-[70%]  pt-10 pb-12 pr-9 pl-9 
+    bg-[rgba(255,255,255,1)] z-30 left-1/2 top-1/2 translate-x-[-50%] 
     translate-y-[-50%] rounded-lg flex items-center justify-center flex-wrap
+    md:pt-10 md:w-[40%] 
     `,
-    inner: title("주의사항", ""),
+    inner: title("공지사항", ""),
     append: popupcover,
   });
   ce({
     className: "closebtn",
     append: popup,
-  }).addEventListener('click', (e) => {
+  }).addEventListener("click", (e) => {
     e.preventDefault();
     const t = e.currentTarget.parentNode.parentNode;
     t.remove();
-  })
+  });
   ce({
     element: "p",
     className: "text-lg w-full break-keep",
@@ -32,5 +34,24 @@ export default function Popup() {
     서포터는 멸화를 끼지 않을 경우 점수가 현저히 낮게 나올 수 있습니다.
       `,
     append: popup,
+  });
+  const checkbox = ce({
+    className: "mt-4 flex items-center justify-center",
+    append: popup,
+  });
+  const check = ce({
+    element: "input",
+    className: "block mr-1",
+    append: checkbox,
+  });
+  ce({
+    element: "label",
+    inner: "오늘 하루 안보기",
+    append: checkbox,
+  });
+  check.type = "checkbox";
+  check.addEventListener("click", (e) => {
+    document.cookie = `noPopup=O; Path=/; Max-Age=${3600 * 24}`;
+    popup.remove();
   });
 }

@@ -155,9 +155,9 @@ export default function Calculator(userSpec, raidname = {}) {
   // }, []);
   const title = !!raidname
     ? [...raidname?.title].reduce((a, c) => {
-      if (c === userSpec.title) a += 100;
-      return a;
-    }, 0)
+        if (c === userSpec.title) a += 100;
+        return a;
+      }, 0)
     : 0;
   const cardList = [
     { name: "세상을 구하는 빛" },
@@ -184,9 +184,13 @@ export default function Calculator(userSpec, raidname = {}) {
     return result;
   };
   const engraving = userSpec.engraving.lv?.reduce((a, c, i) => {
-    a += c
-    return a
+    a += c;
+    return a;
   }, 0);
+  const legendAvatar = userSpec.legendAvatar.reduce(
+    (a, c) => (c ? (a += 25) : (a += 0)),
+    0
+  );
 
   let res = {
     level,
@@ -198,6 +202,7 @@ export default function Calculator(userSpec, raidname = {}) {
     title,
     elixir,
     engraving,
+    legendAvatar,
     card: card(),
   };
 
@@ -212,7 +217,7 @@ export default function Calculator(userSpec, raidname = {}) {
         max = 2;
         break;
       case "wepon":
-        max = 25;
+        max = 24;
         break;
       case "armor":
         max = 10;
@@ -221,7 +226,7 @@ export default function Calculator(userSpec, raidname = {}) {
         max = 20;
         break;
       case "skillPoint":
-        max = 3;
+        max = 2;
         break;
       case "status":
         max = 3;
@@ -233,17 +238,18 @@ export default function Calculator(userSpec, raidname = {}) {
         max = 15;
         break;
       case "card":
-        max = 13;
+        max = 12;
         break;
       case "engraving":
-        console.log(c);
-        if (c === 15) a += 5
-        else if (c === 16) a += 6
-        else if (c === 17) a += 8
+        if (c === 15) a += 5;
+        else if (c === 16) a += 6;
+        else if (c === 17) a += 8;
+        break;
+      case "legendAvatar":
+        max = 3;
         break;
     }
-    if (!!max)
-      score = max * (c / 100);
+    if (!!max) score = max * (c / 100);
     if (!!score) a += score;
     if (a > 100) a = 100;
     return a;

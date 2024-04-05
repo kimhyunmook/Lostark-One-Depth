@@ -1,5 +1,5 @@
-import { ce } from "../util.js";
-import { title } from "../util.js";
+import { ce } from "./util.js";
+import { title } from "./util.js";
 
 export default function Spec_div({ profilecover, cal }) {
   let style = "";

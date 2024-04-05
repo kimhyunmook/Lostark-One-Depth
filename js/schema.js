@@ -2,6 +2,7 @@ export const userSpec = {
   name: "",
   level: 0,
   itemlevel: 0,
+  legendAvatar: 0,
   status: {
     sum: 0,
     value: [],
