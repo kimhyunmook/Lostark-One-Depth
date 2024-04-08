@@ -5,9 +5,15 @@ export default function Raid_list({ header }) {
   const cover = ce({
     element: "form",
     className:
-      "listBox absolute top-4 left-5 bg-white p-2 rounded-lg md:w-[200px] md:p-3",
+      "listBox fixed z-40 top-4 left-5 bg-white p-2 rounded-lg md:w-[200px] md:p-3",
     append: header,
   });
+  window.addEventListener("scroll", (e) => {
+    console.log(window.scrollY);
+    if (window.scrollY > 900) cover.classList.add("hidden");
+    else cover.classList.remove("hidden");
+  });
+
   cover.nmae = "endContent";
   const endContentllist = listUlCreate(endContent, "endContent", cover);
   endContentllist.value.map((v, i) => {

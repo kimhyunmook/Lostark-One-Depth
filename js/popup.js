@@ -52,6 +52,6 @@ export default function Popup() {
   check.type = "checkbox";
   check.addEventListener("click", (e) => {
     document.cookie = `noPopup=O; Path=/; Max-Age=${3600 * 24}`;
-    popup.remove();
+    popupcover.remove();
   });
 }
