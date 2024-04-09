@@ -19,13 +19,9 @@ export default function Raid_list({ header }) {
     if (window.scrollY > 300) {
       style1.map((v) => cover.classList.remove(v));
       style2.map((v) => cover.classList.add(v));
-      // cover.classList.remove("absolute");
-      // cover.classList.add("fixed");
     } else {
       style1.map((v) => cover.classList.add(v));
       style2.map((v) => cover.classList.remove(v));
-      // cover.classList.remove("fixed");
-      // cover.classList.add("absolute");
     }
   });
 
