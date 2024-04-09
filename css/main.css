@@ -223,3 +223,7 @@ header nav .menu-cover ul li.characters-li form button.resetbtn:hover::after {
 .popup .closebtn::before {
   background-color: #000;
 }
+
+.listBox {
+  transition: 0.5s;
+}

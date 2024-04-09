@@ -5,13 +5,20 @@ export default function Raid_list({ header }) {
   const cover = ce({
     element: "form",
     className:
-      "listBox fixed z-40 top-4 left-5 bg-white p-2 rounded-lg md:w-[200px] md:p-3",
+      "listBox absolute z-40 top-4 left-5 bg-white p-2 rounded-lg md:w-[200px] md:p-3  transition ease-in-out delay-150",
     append: header,
   });
   window.addEventListener("scroll", (e) => {
-    console.log(window.scrollY);
-    if (window.scrollY > 900) cover.classList.add("hidden");
+    if (window.scrollY > 1000) cover.classList.add("hidden");
     else cover.classList.remove("hidden");
+
+    if (window.scrollY > 200) {
+      cover.classList.remove("absolute");
+      cover.classList.add("fixed");
+    } else {
+      cover.classList.remove("fixed");
+      cover.classList.add("absolute");
+    }
   });
 
   cover.nmae = "endContent";

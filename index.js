@@ -17,6 +17,10 @@ const closebtn = document.querySelectorAll(
 const header = document.querySelector("header");
 const raidList = Raid_list({ header });
 
+const character = document.querySelector(".cover-character");
+console.log(character);
+// if(!!!character) document.querySelector('output-view > p').classList.remove('')
+
 if (getCookie("noPopup") !== "O") Popup();
 
 const characters_serarch = document.querySelector(`${nav} .characters-search`);

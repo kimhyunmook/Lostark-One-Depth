@@ -210,8 +210,9 @@ export default function Calculator(userSpec, raidname = {}) {
 
   total = Object.values(res)?.reduce((a, c, i) => {
     let max,
+      min,
       score = 0;
-
+    let defect = false;
     switch (Object.keys(res)[i]) {
       case "level":
         max = 2;
@@ -252,8 +253,14 @@ export default function Calculator(userSpec, raidname = {}) {
     if (!!max) score = max * (c / 100);
     if (!!score) a += score;
     if (a > 100) a = 100;
+
     return a;
   }, total);
+  console.log(userSpec.gem);
+  if (isNaN(userSpec.gem.attk) && isNaN(userSpec.gem.cool)) {
+    total -= 11;
+  }
+  if (total < 0) total = 0;
 
   console.log("total", total);
   if (total < cut) {
