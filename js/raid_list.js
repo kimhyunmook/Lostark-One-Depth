@@ -12,12 +12,20 @@ export default function Raid_list({ header }) {
     if (window.scrollY > 1000) cover.classList.add("hidden");
     else cover.classList.remove("hidden");
 
-    if (window.scrollY > 200) {
-      cover.classList.remove("absolute");
-      cover.classList.add("fixed");
+    let [style1, style2] = [
+      ["absolute", "left-5"],
+      ["fixed", "right-5"],
+    ];
+    if (window.scrollY > 300) {
+      style1.map((v) => cover.classList.remove(v));
+      style2.map((v) => cover.classList.add(v));
+      // cover.classList.remove("absolute");
+      // cover.classList.add("fixed");
     } else {
-      cover.classList.remove("fixed");
-      cover.classList.add("absolute");
+      style1.map((v) => cover.classList.add(v));
+      style2.map((v) => cover.classList.remove(v));
+      // cover.classList.remove("fixed");
+      // cover.classList.add("absolute");
     }
   });
 
