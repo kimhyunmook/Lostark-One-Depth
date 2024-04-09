@@ -11,7 +11,7 @@ export const userSpec = {
   title: "",
   elixir: {
     lv: 0,
-    special: true,
+    special: false,
   },
   wepon: {
     stage: 0,
