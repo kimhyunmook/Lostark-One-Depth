@@ -16,13 +16,13 @@ export default function Raid_list({ header }) {
       ["absolute", "left-5"],
       ["fixed", "right-5"],
     ];
-    if (window.scrollY > 300) {
-      style1.map((v) => cover.classList.remove(v));
-      style2.map((v) => cover.classList.add(v));
-    } else {
-      style1.map((v) => cover.classList.add(v));
-      style2.map((v) => cover.classList.remove(v));
-    }
+    // if (window.scrollY > 300) {
+    //   style1.map((v) => cover.classList.remove(v));
+    //   style2.map((v) => cover.classList.add(v));
+    // } else {
+    //   style1.map((v) => cover.classList.add(v));
+    //   style2.map((v) => cover.classList.remove(v));
+    // }
   });
 
   cover.nmae = "endContent";
