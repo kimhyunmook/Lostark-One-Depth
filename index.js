@@ -17,7 +17,6 @@ const closebtn = document.querySelectorAll(
 const header = document.querySelector("header");
 window.addEventListener("scroll", (e) => {
   const y = window.scrollY;
-  console.log(y);
   if (y > 150) header.classList.add("on");
   else header.classList.remove("on");
 });
