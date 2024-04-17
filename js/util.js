@@ -180,7 +180,7 @@ export function tooltip2(target) {
   target.parentNode.classList.add("relative");
   const tooltipcover = ce({
     className:
-      "tooltip2 w-[150px] md:w-92 pt-4 pb-4 pl-2 pr-4 hidden group-hover/tooltip2:block absolute top-0 left-0 md:left-[100px] bg-white rounded-[20px] z-20",
+      "tooltip2 w-full md:w-92 pt-4 pb-4 pl-2 pr-4 hidden group-hover/tooltip2:block absolute top-0 left-0 md:left-[100px] bg-white rounded-[20px] z-20",
     append: target.parentNode,
   });
   tooltipcover.append(target);

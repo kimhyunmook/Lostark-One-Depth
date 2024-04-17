@@ -39,3 +39,4 @@ characters_serarch.addEventListener("click", (e) => {
   }
   Character(user_name.value, raidList);
 });
+Character("개연구");

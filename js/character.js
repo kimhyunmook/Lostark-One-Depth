@@ -52,7 +52,7 @@ export default function Character(target, raidList) {
       const profilecover = ce({
         ...coverInit,
         className:
-          "profile-cover relative rounded-lg md:p-2 bg-[#15181D] w-[90vw]",
+          "profile-cover relative rounded-lg md:p-2 bg-[#15181D] w-full overflow-hidden",
         inner: title("User Profile"),
       });
       const specButton = ce({
@@ -202,6 +202,7 @@ export default function Character(target, raidList) {
           if (!!!equipment[i]) return;
 
           tooltip = JSON.parse(equipment[i]?.Tooltip);
+          // console.log(tooltip);
           const infotext = (target, type) => {
             let value = Object.values(tooltip);
             let result = value.filter((x) => x.type === target);
@@ -232,6 +233,12 @@ export default function Character(target, raidList) {
               let arr = [];
               switch (type) {
                 case "초월":
+                  if (str.childNodes.length > 0)
+                    [...str.childNodes].map((v) => {
+                      if (v.nodeName === "IMG") {
+                        v.src = "";
+                      }
+                    });
                   str = str.textContent.replace("[초월] ", "Lv").split("단계");
                   str = !!str[1]
                     ? str[0] + `<b class="text-black"> +${str[1].trim()}</b>`
@@ -519,7 +526,7 @@ export default function Character(target, raidList) {
       const gemeffectscover = ce({
         element: "div",
         className:
-          "gemeffects-cover flex flex-wrap lg:grid-cols-11 relative bg-white p-4 rounded-lg",
+          "gemeffects-cover flex flex-wrap lg:grid-cols-11 relative bg-white pt-4 pb-4 md:p-4 rounded-lg",
         append: gemcover,
       });
       const attkgem = [];
@@ -552,7 +559,7 @@ export default function Character(target, raidList) {
         }
         const slotbox = ce({
           className:
-            "gem-slot  mb-2 ml-2 mr-2 md:m-auto group/gems bg-white p-1 rounded-md lg:relative col-span-1 lg:w-[64px] lg:h-[64px] w-[64px] h-[64px]" +
+            "gem-slot  mb-2 ml-2 mr-2 md:m-auto group/gems bg-white p-1 rounded-md lg:relative col-span-1 lg:w-[64px] lg:h-[64px] w-[45px] h-[45px]" +
             css.gradient(from, to),
           append: gemeffectscover,
         });
@@ -671,7 +678,7 @@ export default function Character(target, raidList) {
         });
         const teduri = ce({
           className:
-            "w-full h-full max-w-[140px] translate-x-[-50%] left-[50%] md:translate-x-0 absolute z-10 top-0 md:left-0 " +
+            "w-full h-full max-w-[140px] w-[140px] translate-x-[-50%] left-[50%] md:translate-x-0 absolute z-10 top-0 md:left-0 " +
             style,
           append: typecover,
         });
@@ -780,13 +787,14 @@ export default function Character(target, raidList) {
         ce({
           element: "p",
           className: "description break-keep text-sm pl-1 mt-3 md:mt-0",
-          inner: `<b class="text-white mb-1 text-lg">${el.Name}</b>`,
+          inner: `<b class="text-white mb-1 text-sm lg:text-lg">${el.Name}</b>`,
           append: typecover,
         });
+        const des = el.Description.replaceAll("ffff99", "9e5f04");
         const text = ce({
           element: "p",
           className: "description md:break-keep text-sm pl-1",
-          inner: `<b class="text-violet-700 mb-1 text-lg ${css.border}">${el.Name}</b> <br/> <span class="pl-2 block">${el.Description}</span>`,
+          inner: `<b class="text-violet-700 mb-1 text-sm lg:text-lg ${css.border}">${el.Name}</b> <br/> <span class="pl-2 block">${des}</span>`,
           append: typecover,
         });
         tooltip2(text);
@@ -815,7 +823,7 @@ export default function Character(target, raidList) {
           type === "상의 아바타" ||
           type === "하의 아바타" ||
           type === "무기 아바타";
-        if (!twoavatar) w = "max-w-[250px]";
+        if (!twoavatar) w = "max-w-[190px]";
         let typecoverCss = `avatar_under m-3 flex flex-wrap justify-between ${w}`;
         const typeavatar = ce({
           className: typecoverCss,
