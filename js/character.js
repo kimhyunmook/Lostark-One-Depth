@@ -56,7 +56,7 @@ export default function Character(target, raidList) {
       const specButton = ce({
         element: "button",
         className:
-          "specButton bg-green-500 absolute top-6 text-white font-black text-xl p-2 w-40 rounded-lg hover:bg-green-600 active:text-white" +
+          "specButton z-10 bg-green-500 absolute bottom-6 md:bottom-0 md:top-6 text-white font-black text-xl p-2 w-40 h-12 rounded-lg hover:bg-green-600 active:text-white" +
           css.xCenter,
         inner: "SPEC 검사",
         append: profilecover,
@@ -517,7 +517,7 @@ export default function Character(target, raidList) {
       const gemeffectscover = ce({
         element: "div",
         className:
-          "gemeffects-cover grid grid-cols-7 gap-4 lg:grid-cols-11  justify-between relative bg-white p-4 rounded-lg",
+          "gemeffects-cover flex flex-wrap lg:grid-cols-11 relative bg-white p-4 rounded-lg",
         append: gemcover,
       });
       const attkgem = [];
@@ -550,7 +550,7 @@ export default function Character(target, raidList) {
         }
         const slotbox = ce({
           className:
-            "gem-slot group/gems bg-white p-1 rounded-md lg:relative col-span-1 lg:w-[64px] lg:h-[64px] w-[64px] h-[64px]" +
+            "gem-slot  mb-2 ml-2 mr-2 md:m-auto group/gems bg-white p-1 rounded-md lg:relative col-span-1 lg:w-[64px] lg:h-[64px] w-[64px] h-[64px]" +
             css.gradient(from, to),
           append: gemeffectscover,
         });
