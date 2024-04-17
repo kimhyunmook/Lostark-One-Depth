@@ -526,7 +526,7 @@ export default function Character(target, raidList) {
       const gemeffectscover = ce({
         element: "div",
         className:
-          "gemeffects-cover flex flex-wrap lg:grid-cols-11 relative bg-white pt-4 pb-4 md:p-4 rounded-lg",
+          "gemeffects-cover flex flex-wrap lg:grid-cols-11 relative lg:bg-white pt-4 pb-4 md:p-4 rounded-lg",
         append: gemcover,
       });
       const attkgem = [];
@@ -559,7 +559,7 @@ export default function Character(target, raidList) {
         }
         const slotbox = ce({
           className:
-            "gem-slot  mb-2 ml-2 mr-2 md:m-auto group/gems bg-white p-1 rounded-md lg:relative col-span-1 lg:w-[64px] lg:h-[64px] w-[45px] h-[45px]" +
+            "gem-slot  mb-2 ml-2 mr-2 md:m-auto group/gems bg-white p-1 rounded-md lg:relative col-span-1 lg:w-[64px] lg:h-[64px] w-[64px] h-[64px]" +
             css.gradient(from, to),
           append: gemeffectscover,
         });
@@ -638,12 +638,13 @@ export default function Character(target, raidList) {
       const cardcover = ce({
         ...coverInit,
         className: "card",
-        inner: title("카드"),
+        inner: title("카드", "hidden sm:block"),
       });
       const cards = ce({
         element: "div",
         // className: "cards flex flex-wrap items-center justify-between bg-white rounded-lg p-4",
-        className: "cards grid gap-1 grid-cols-3 md:grid-cols-6 rounded-lg p-1",
+        className:
+          "cards hidden sm:block grid gap-1 grid-cols-3 md:grid-cols-6 rounded-lg p-1",
         append: cardcover,
       });
       const cardSpec = [];

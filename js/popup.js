@@ -6,7 +6,7 @@ export default function Popup() {
   });
   let popup = ce({
     className: `
-    popup absolute w-[70%]  pt-10 pb-12 pr-9 pl-9 
+    popup absolute w-[95%] lg:w-[70%] p-6 lg:pt-10 lg:pb-12 lg:pr-9 lg:pl-9 
     bg-[rgba(255,255,255,1)] z-30 left-1/2 top-1/2 translate-x-[-50%] 
     translate-y-[-50%] rounded-lg flex items-center justify-center flex-wrap
     md:pt-10 md:w-[40%] 
@@ -24,9 +24,9 @@ export default function Popup() {
   });
   ce({
     element: "p",
-    className: "text-lg w-full break-keep",
-    inner: `안녕하세요 <b class="text-xl mr-1 ml-1">LostArk One Depth Spec</b>입니다. <br> 
-      원하는 캐릭터의 스팩을 계산해 점수화 시켜 보여줍니다.  <br>
+    className: "text-sm lg:text-lg w-full break-keep",
+    inner: `안녕하세요 <b class="text-md lg:text-xl mr-1 ml-1">LostArk One Depth Spec</b>입니다. <br class="hidden lg:block"/> 
+      원하는 캐릭터의 스팩을 계산해 점수화 시켜 보여줍니다.  <br class="hidden lg:block" />
     점수 계산 방식은 제작자의 실제 경험을 통해 만들었으며 
     유저마다 기준은 다를 수 있기에 참고만 부탁드립니다. <br>
     <br>
