@@ -29,7 +29,7 @@ export default function Character(target, raidList) {
       }
 
       outputview.innerHTML = null;
-      console.log("full data", data);
+      // console.log("full data", data);
 
       //footer 추가전까지
       const character = ce({
