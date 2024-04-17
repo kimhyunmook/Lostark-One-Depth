@@ -25,12 +25,14 @@ header .logo img {
   width: 100%;
 }
 header.on .listBox {
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
   border-radius: 0;
   width: 100%;
   z-index: 999;
+  border-bottom: 1px solid #888;
 }
 header.on .listBox ul {
   display: flex;
@@ -244,6 +246,12 @@ header nav .menu-cover ul li.characters-li form button.resetbtn:hover::after {
 
 .listBox {
   transition: 0.5s;
+}
+
+@media screen and (max-width: 768px) {
+  header .listBox {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 500px) {
