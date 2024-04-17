@@ -245,3 +245,9 @@ header nav .menu-cover ul li.characters-li form button.resetbtn:hover::after {
 .listBox {
   transition: 0.5s;
 }
+
+@media screen and (max-width: 500px) {
+  header nav .menu-cover ul li.characters-li {
+    width: 250px;
+  }
+}

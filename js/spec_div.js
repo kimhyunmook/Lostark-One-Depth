@@ -7,7 +7,7 @@ export default function Spec_div({ profilecover, cal }) {
   const specDiv = ce({
     className:
       "specDiv z-20 bg-[rgba(0,0,0,0.9)] absolute w-[90%] h-[90%] p-2 left-1/2 translate-x-[-50%] top-1/2 translate-y-[-50%] rounded-xl",
-    inner: title("User Spec", "text-center text-5xl"),
+    inner: title("User Spec", "text-center text-3xl md:text-5xl"),
     append: profilecover,
   });
   const specDivCloseBtn = ce({

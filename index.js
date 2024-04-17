@@ -24,7 +24,6 @@ window.addEventListener("scroll", (e) => {
 const raidList = Raid_list({ header });
 
 const character = document.querySelector(".cover-character");
-console.log(character);
 // if(!!!character) document.querySelector('output-view > p').classList.remove('')
 
 if (getCookie("noPopup") !== "O") Popup();
@@ -41,3 +40,5 @@ characters_serarch.addEventListener("click", (e) => {
   }
   Character(user_name.value, raidList);
 });
+
+Character("개연구");

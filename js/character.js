@@ -34,7 +34,8 @@ export default function Character(target, raidList) {
       //footer 추가전까지
       const character = ce({
         element: "div",
-        className: "cover-character pb-[200px] " + css.cover,
+        className:
+          "cover-character pb-[200px] bg-zinc-700 p-3 md:p-5 grid gap-10 overflow-hidden",
       });
       let coverInit = {
         element: "div",
@@ -50,7 +51,8 @@ export default function Character(target, raidList) {
 
       const profilecover = ce({
         ...coverInit,
-        className: "profile-cover relative rounded-lg p-2 bg-[#15181D]",
+        className:
+          "profile-cover relative rounded-lg md:p-2 bg-[#15181D] w-[90vw]",
         inner: title("User Profile"),
       });
       const specButton = ce({
@@ -76,7 +78,7 @@ export default function Character(target, raidList) {
       const infocover = ce({
         element: "div",
         className:
-          "profile-info-cover p-2 absolute h-full max-h-[600px] min-w-[400px]",
+          "profile-info-cover p-2 absolute h-full max-h-[600px] min-w-[200px]",
         append: profilecover,
       });
       // const statscover = ce({
@@ -138,7 +140,7 @@ export default function Character(target, raidList) {
       };
       ce({
         element: "h3",
-        className: "text-3xl text-white mt-2 mb-4 font-black",
+        className: "text-xl md:text-3xl text-white mt-2 mb-4 font-black",
         inner: label("Lv", profile.ItemAvgLevel, labelstyle),
         append: infocover,
       });
@@ -407,7 +409,7 @@ export default function Character(target, raidList) {
           });
           const imgcover = ce({
             className:
-              "equipment-img-cover flex w-[64px] relative rounded-md overflow-hidden bg-gradient-to-br mr-3 " +
+              "equipment-img-cover flex w-[50px] md:w-[64px] relative rounded-md overflow-hidden bg-gradient-to-br mr-3 " +
               style +
               h,
             append: typecover,
@@ -431,7 +433,7 @@ export default function Character(target, raidList) {
 
           const spec = ce({
             className:
-              "spec pt-1 flex flex-wrap items-start max-w-[350px] min-w-[290px]",
+              "spec pt-1 flex flex-wrap items-start max-w-[350px] md:min-w-[290px] w-[80%]",
             append: typecover,
           });
 
@@ -765,25 +767,25 @@ export default function Character(target, raidList) {
       engraving?.Effects.map((el) => {
         const typecover = ce({
           element: "div",
-          className: "engraving-cover rounded-lg  p-4 flex m-3 bg-[#15181d]",
+          className: "engraving-cover rounded-lg  p-4 md:flex m-3 bg-[#15181d]",
           append: engravingeffectcover,
         });
         ce({
           element: "img",
           className:
-            "engravingeffect-img max-w-[64px] max-h-[64px] r mr-4 rounded-full",
+            "engravingeffect-img max-w-[40px] max-h-[40px] md:max-w-[64px] md:max-h-[64px] r mr-4 rounded-full",
           inner: el.Icon,
           append: typecover,
         });
         ce({
           element: "p",
-          className: "description break-keep text-sm pl-1",
+          className: "description break-keep text-sm pl-1 mt-3 md:mt-0",
           inner: `<b class="text-white mb-1 text-lg">${el.Name}</b>`,
           append: typecover,
         });
         const text = ce({
           element: "p",
-          className: "description break-keep text-sm pl-1",
+          className: "description md:break-keep text-sm pl-1",
           inner: `<b class="text-violet-700 mb-1 text-lg ${css.border}">${el.Name}</b> <br/> <span class="pl-2 block">${el.Description}</span>`,
           append: typecover,
         });

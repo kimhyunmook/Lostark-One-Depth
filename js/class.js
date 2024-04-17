@@ -8,7 +8,8 @@ export const css = {
   cover_div: "grid grid-cols-2 md:grid-cols-3 gap-4",
   cover_div_under: "grid gap-5",
   cover_img: "m-auto mb-3",
-  big_title: " text-3xl font-bold col-span-2 md:col-span-3 mb-4 w-full",
+  big_title:
+    " text-2xl pl-2 pt-1 md:p-0 md:text-3xl font-bold col-span-2 md:col-span-3 mb-4 w-full",
   small_title: " text-2xl text-slate-300 font-bold",
   avatar: " grid gap-3",
   legend: " overflow-hidden bg-gradient-to-br from-[#362003] to-[#9e5f04]",
