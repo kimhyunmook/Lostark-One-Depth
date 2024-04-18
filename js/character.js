@@ -644,7 +644,7 @@ export default function Character(target, raidList) {
         element: "div",
         // className: "cards flex flex-wrap items-center justify-between bg-white rounded-lg p-4",
         className:
-          "cards hidden sm:block grid gap-1 grid-cols-3 md:grid-cols-6 rounded-lg p-1",
+          "cards hidden sm:grid gap-1 grid-cols-3 md:grid-cols-6 rounded-lg p-1",
         append: cardcover,
       });
       const cardSpec = [];

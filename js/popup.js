@@ -6,7 +6,7 @@ export default function Popup() {
   });
   let popup = ce({
     className: `
-    popup absolute w-[95%] lg:w-[70%] p-6 lg:pt-10 lg:pb-12 lg:pr-9 lg:pl-9 
+    popup absolute w-[95%] lg:w-[30%] p-6 lg:pt-10 lg:pb-12 lg:pr-9 lg:pl-9 
     bg-[rgba(255,255,255,1)] z-30 left-1/2 top-1/2 translate-x-[-50%] 
     translate-y-[-50%] rounded-lg flex items-center justify-center flex-wrap
     md:pt-10 md:w-[40%] 
